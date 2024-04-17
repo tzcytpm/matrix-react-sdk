@@ -3144,7 +3144,8 @@
         "unable_to_decrypt": "Kunde inte avkryptera meddelande"
     },
     "threads_activity_centre": {
-        "header": "Aktivitet för trådar"
+        "header": "Aktivitet för trådar",
+        "no_rooms_with_unreads_threads": "Du har inte rum med olästa trådar än."
     },
     "time": {
         "about_day_ago": "cirka en dag sedan",

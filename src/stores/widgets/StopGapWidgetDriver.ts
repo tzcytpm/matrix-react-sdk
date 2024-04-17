@@ -142,9 +142,6 @@ export class StopGapWidgetDriver extends WidgetDriver {
                 WidgetEventCapability.forStateEvent(EventDirection.Receive, "org.matrix.msc3401.call").raw,
             );
             this.allowedCapabilities.add(
-                WidgetEventCapability.forStateEvent(EventDirection.Receive, EventType.RoomEncryption).raw,
-            );
-            this.allowedCapabilities.add(
                 WidgetEventCapability.forStateEvent(
                     EventDirection.Send,
                     "org.matrix.msc3401.call.member",

@@ -33,7 +33,7 @@ import { isSecureBackupRequired } from "./utils/WellKnownUtils";
 import AccessSecretStorageDialog, { KeyParams } from "./components/views/dialogs/security/AccessSecretStorageDialog";
 import RestoreKeyBackupDialog from "./components/views/dialogs/security/RestoreKeyBackupDialog";
 import SettingsStore from "./settings/SettingsStore";
-import { ModuleRunner } from "./modules/ModuleRunner";
+import SecurityCustomisations from "./customisations/Security";
 import QuestionDialog from "./components/views/dialogs/QuestionDialog";
 import InteractiveAuthDialog from "./components/views/dialogs/InteractiveAuthDialog";
 
@@ -137,9 +137,9 @@ async function getSecretStorageKey({
         }
     }
 
-    const keyFromCustomisations = ModuleRunner.instance.extensions.cryptoSetup.getSecretStorageKey();
+    const keyFromCustomisations = SecurityCustomisations.getSecretStorageKey?.();
     if (keyFromCustomisations) {
-        logger.log("CryptoSetupExtension: Using key from extension (secret storage)");
+        logger.log("Using key from security customisations (secret storage)");
         cacheSecretStorageKey(keyId, keyInfo, keyFromCustomisations);
         return [keyId, keyFromCustomisations];
     }
@@ -187,9 +187,9 @@ export async function getDehydrationKey(
     keyInfo: SecretStorage.SecretStorageKeyDescription,
     checkFunc: (data: Uint8Array) => void,
 ): Promise<Uint8Array> {
-    const keyFromCustomisations = ModuleRunner.instance.extensions.cryptoSetup.getSecretStorageKey();
+    const keyFromCustomisations = SecurityCustomisations.getSecretStorageKey?.();
     if (keyFromCustomisations) {
-        logger.log("CryptoSetupExtension: Using key from extension (dehydration)");
+        logger.log("Using key from security customisations (dehydration)");
         return keyFromCustomisations;
     }
 
@@ -430,7 +430,7 @@ async function doAccessSecretStorage(func: () => Promise<void>, forceReset: bool
         // inner operation completes.
         return await func();
     } catch (e) {
-        ModuleRunner.instance.extensions.cryptoSetup.catchAccessSecretStorageError(e as Error);
+        SecurityCustomisations.catchAccessSecretStorageError?.(e);
         logger.error(e);
         // Re-throw so that higher level logic can abort as needed
         throw e;

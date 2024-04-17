@@ -38,6 +38,7 @@ import SettingsStore from "../../settings/SettingsStore";
 import { SettingLevel } from "../../settings/SettingLevel";
 import ResizeHandle from "../views/elements/ResizeHandle";
 import { CollapseDistributor, Resizer } from "../../resizer";
+import MatrixClientContext from "../../contexts/MatrixClientContext";
 import ResizeNotifier from "../../utils/ResizeNotifier";
 import PlatformPeg from "../../PlatformPeg";
 import { DefaultTagID } from "../../stores/room-list/models";
@@ -74,7 +75,6 @@ import { UserOnboardingPage } from "../views/user-onboarding/UserOnboardingPage"
 import { PipContainer } from "./PipContainer";
 import { monitorSyncedPushRules } from "../../utils/pushRules/monitorSyncedPushRules";
 import { ConfigOptions } from "../../SdkConfig";
-import { MatrixClientContextProvider } from "./MatrixClientContextProvider";
 
 // We need to fetch each pinned message individually (if we don't already have it)
 // so each pinned message may trigger a request. Limit the number per room for sanity.
@@ -672,7 +672,7 @@ class LoggedInView extends React.Component<IProps, IState> {
         });
 
         return (
-            <MatrixClientContextProvider client={this._matrixClient}>
+            <MatrixClientContext.Provider value={this._matrixClient}>
                 <div
                     onPaste={this.onPaste}
                     onKeyDown={this.onReactKeyDown}
@@ -707,7 +707,7 @@ class LoggedInView extends React.Component<IProps, IState> {
                 <PipContainer />
                 <NonUrgentToastContainer />
                 {audioFeedArraysForCalls}
-            </MatrixClientContextProvider>
+            </MatrixClientContext.Provider>
         );
     }
 }

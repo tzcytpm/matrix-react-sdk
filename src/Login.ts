@@ -27,7 +27,7 @@ import {
 import { logger } from "matrix-js-sdk/src/logger";
 
 import { IMatrixClientCreds } from "./MatrixClientPeg";
-import { ModuleRunner } from "./modules/ModuleRunner";
+import SecurityCustomisations from "./customisations/Security";
 import { getOidcClientId } from "./utils/oidc/registerClient";
 import { IConfigOptions } from "./IConfigOptions";
 import SdkConfig from "./SdkConfig";
@@ -291,7 +291,7 @@ export async function sendLoginRequest(
         accessToken: data.access_token,
     };
 
-    ModuleRunner.instance.extensions.cryptoSetup.examineLoginResponse(data, creds);
+    SecurityCustomisations.examineLoginResponse?.(data, creds);
 
     return creds;
 }

@@ -88,7 +88,7 @@ import { showToast as showMobileGuideToast } from "../../toasts/MobileGuideToast
 import { shouldUseLoginForWelcome } from "../../utils/pages";
 import RoomListStore from "../../stores/room-list/RoomListStore";
 import { RoomUpdateCause } from "../../stores/room-list/models";
-import { ModuleRunner } from "../../modules/ModuleRunner";
+import SecurityCustomisations from "../../customisations/Security";
 import Spinner from "../views/elements/Spinner";
 import QuestionDialog from "../views/dialogs/QuestionDialog";
 import UserSettingsDialog from "../views/dialogs/UserSettingsDialog";
@@ -116,7 +116,7 @@ import { ButtonEvent } from "../views/elements/AccessibleButton";
 import { ActionPayload } from "../../dispatcher/payloads";
 import { SummarizedNotificationState } from "../../stores/notifications/SummarizedNotificationState";
 import Views from "../../Views";
-import { FocusNextType, ViewRoomPayload } from "../../dispatcher/payloads/ViewRoomPayload";
+import { ViewRoomPayload } from "../../dispatcher/payloads/ViewRoomPayload";
 import { ViewHomePagePayload } from "../../dispatcher/payloads/ViewHomePagePayload";
 import { AfterLeaveRoomPayload } from "../../dispatcher/payloads/AfterLeaveRoomPayload";
 import { DoAfterSyncPreparedPayload } from "../../dispatcher/payloads/DoAfterSyncPreparedPayload";
@@ -229,8 +229,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
 
     private screenAfterLogin?: IScreen;
     private tokenLogin?: boolean;
-    // What to focus on next component update, if anything
-    private focusNext: FocusNextType;
+    private focusComposer: boolean;
     private subTitleStatus: string;
     private prevWindowWidth: number;
     private voiceBroadcastResumer?: VoiceBroadcastResumer;
@@ -298,6 +297,8 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         this.fontWatcher = new FontWatcher();
         this.themeWatcher.start();
         this.fontWatcher.start();
+
+        this.focusComposer = false;
 
         // object field used for tracking the status info appended to the title tag.
         // we don't do it as react state as i'm scared about triggering needless react refreshes.
@@ -442,9 +443,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         if (crossSigningIsSetUp) {
             // if the user has previously set up cross-signing, verify this device so we can fetch the
             // private keys.
-
-            const cryptoExtension = ModuleRunner.instance.extensions.cryptoSetup;
-            if (cryptoExtension.SHOW_ENCRYPTION_SETUP_UI == false) {
+            if (SecurityCustomisations.SHOW_ENCRYPTION_SETUP_UI === false) {
                 this.onLoggedIn();
             } else {
                 this.setStateForNewView({ view: Views.COMPLETE_SECURITY });
@@ -484,11 +483,9 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                 PosthogTrackers.instance.trackPageChange(this.state.view, this.state.page_type, durationMs);
             }
         }
-        if (this.focusNext === "composer") {
+        if (this.focusComposer) {
             dis.fire(Action.FocusSendMessageComposer);
-            this.focusNext = undefined;
-        } else if (this.focusNext === "threadsPanel") {
-            dis.fire(Action.FocusThreadsPanel);
+            this.focusComposer = false;
         }
     }
 
@@ -988,7 +985,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
 
     // switch view to the given room
     private async viewRoom(roomInfo: ViewRoomPayload): Promise<void> {
-        this.focusNext = roomInfo.focusNext ?? "composer";
+        this.focusComposer = true;
 
         if (roomInfo.room_alias) {
             logger.log(`Switching to room alias ${roomInfo.room_alias} at event ${roomInfo.event_id}`);

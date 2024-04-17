@@ -3145,7 +3145,8 @@
         "unable_to_decrypt": "Impossibile decifrare il messaggio"
     },
     "threads_activity_centre": {
-        "header": "Attività delle conversazioni"
+        "header": "Attività delle conversazioni",
+        "no_rooms_with_unreads_threads": "Non hai ancora stanze con conversazioni non lette."
     },
     "time": {
         "about_day_ago": "circa un giorno fa",

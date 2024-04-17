@@ -41,7 +41,6 @@ import {
     HistoryVisibility,
     HierarchyRelation,
     HierarchyRoom,
-    JoinRule,
 } from "matrix-js-sdk/src/matrix";
 import { RoomHierarchy } from "matrix-js-sdk/src/room-hierarchy";
 import classNames from "classnames";
@@ -137,12 +136,11 @@ const Tile: React.FC<ITileProps> = ({
         setBusy(true);
         ev.preventDefault();
         ev.stopPropagation();
-        try {
-            await onJoinRoomClick();
-            await awaitRoomDownSync(cli, room.room_id);
-        } finally {
-            setBusy(false);
-        }
+        onJoinRoomClick()
+            .then(() => awaitRoomDownSync(cli, room.room_id))
+            .finally(() => {
+                setBusy(false);
+            });
     };
 
     let button: ReactElement;
@@ -159,9 +157,7 @@ const Tile: React.FC<ITileProps> = ({
                 <Spinner w={24} h={24} />
             </AccessibleTooltipButton>
         );
-    } else if (joinedRoom || room.join_rule === JoinRule.Knock) {
-        // If the room is knockable, show the "View" button even if we are not a member; that
-        // allows us to reuse the "request to join" UX in RoomView.
+    } else if (joinedRoom) {
         button = (
             <AccessibleButton
                 onClick={onPreviewClick}
@@ -422,8 +418,7 @@ export const joinRoom = async (cli: MatrixClient, hierarchy: RoomHierarchy, room
             );
         }
 
-        // rethrow error so that the caller can handle react to it too
-        throw err;
+        return;
     }
 
     defaultDispatcher.dispatch<JoinRoomReadyPayload>({

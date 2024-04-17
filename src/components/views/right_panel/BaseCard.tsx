@@ -35,8 +35,6 @@ interface IProps {
     onKeyDown?(ev: KeyboardEvent): void;
     cardState?: any;
     ref?: Ref<HTMLDivElement>;
-    // Ref for the 'close' button the the card
-    closeButtonRef?: Ref<HTMLDivElement>;
     children: ReactNode;
 }
 
@@ -56,21 +54,7 @@ export const Group: React.FC<IGroupProps> = ({ className, title, children }) => 
 };
 
 const BaseCard: React.FC<IProps> = forwardRef<HTMLDivElement, IProps>(
-    (
-        {
-            closeLabel,
-            onClose,
-            onBack,
-            className,
-            header,
-            footer,
-            withoutScrollContainer,
-            children,
-            onKeyDown,
-            closeButtonRef,
-        },
-        ref,
-    ) => {
+    ({ closeLabel, onClose, onBack, className, header, footer, withoutScrollContainer, children, onKeyDown }, ref) => {
         let backButton;
         const cardHistory = RightPanelStore.instance.roomPhaseHistory;
         if (cardHistory.length > 1) {
@@ -91,7 +75,6 @@ const BaseCard: React.FC<IProps> = forwardRef<HTMLDivElement, IProps>(
                     className="mx_BaseCard_close"
                     onClick={onClose}
                     title={closeLabel || _t("action|close")}
-                    ref={closeButtonRef}
                 />
             );
         }

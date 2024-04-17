@@ -553,7 +553,7 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
                         {_t("action|sign_in")}
                         {loader}
                     </h1>
-                    {/* {errorTextSection} */}
+                    {errorTextSection}
                     {serverDeadSection}
                     <ServerPicker
                         serverConfig={this.props.serverConfig}
