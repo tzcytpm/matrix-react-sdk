@@ -137,6 +137,13 @@ export default class AutoDiscoveryUtils {
         let isFatalError = true;
         const errorMessage = err instanceof Error ? err.message : err;
         if (errorMessage === AutoDiscovery.ERROR_INVALID_IDENTITY_SERVER) {
+            // @Thz: 17 Apr 2024 - Disable identity server warning ----------------
+            return {
+                serverIsAlive: true,
+                serverErrorIsFatal: false,
+                serverDeadError: null,
+            };
+            // @Thz: 17 Apr 2024 - Disable identity server warning ----------------
             isFatalError = false;
             title = _t("auth|failed_connect_identity_server");
 

@@ -406,7 +406,7 @@
     },
     "cannot_invite_without_identity_server": "Cannot invite user by email without an identity server. You can connect to one under \"Settings\".",
     "cannot_reach_homeserver": "Cannot reach homeserver",
-    "cannot_reach_homeserver_detail": "Ensure you have a stable internet connection, or get in touch with the server admin",
+    "cannot_reach_homeserver_detail": "Ensure you connected to Privateline network via VPN, or get in touch with the server admin",
     "cant_load_page": "Couldn't load page",
     "chat_card_back_action_label": "Back to chat",
     "chat_effects": {
@@ -1054,7 +1054,7 @@
         "storage_evicted_description_2": "Your browser likely removed this data when running low on disk space.",
         "storage_evicted_title": "Missing session data",
         "sync": "Unable to connect to Homeserver. Retrying…",
-        "tls": "Can't connect to homeserver - please check your connectivity, ensure your <a>homeserver's SSL certificate</a> is trusted, and that a browser extension is not blocking requests.",
+        "tls": "Can't connect to homeserver - please check your connectivity, ensure you connected to Privateline network via VPN",
         "unknown": "Unknown error",
         "unknown_error_code": "unknown error code",
         "update_power_level": "Failed to change power level"
