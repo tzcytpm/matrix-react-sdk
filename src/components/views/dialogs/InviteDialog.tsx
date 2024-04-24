@@ -1329,17 +1329,18 @@ export default class InviteDialog extends React.PureComponent<Props, IInviteDial
                     <p>{_t("invite|suggestions_disclaimer_prompt")}</p>
                 </div>
             );
-            const link = makeUserPermalink(MatrixClientPeg.safeGet().getSafeUserId());
-            footer = (
-                <div className="mx_InviteDialog_footer">
-                    <h3>{_t("invite|send_link_prompt")}</h3>
-                    <CopyableText getTextToCopy={() => makeUserPermalink(MatrixClientPeg.safeGet().getSafeUserId())}>
-                        <a className="mx_InviteDialog_footer_link" href={link} onClick={this.onLinkClick}>
-                            {link}
-                        </a>
-                    </CopyableText>
-                </div>
-            );
+	    // @Thz 24 Apr 2024: Hide Invite Link
+            // const link = makeUserPermalink(MatrixClientPeg.safeGet().getSafeUserId());
+            // footer = (
+            //     <div className="mx_InviteDialog_footer">
+            //         <h3>{_t("invite|send_link_prompt")}</h3>
+            //         <CopyableText getTextToCopy={() => makeUserPermalink(MatrixClientPeg.safeGet().getSafeUserId())}>
+            //             <a className="mx_InviteDialog_footer_link" href={link} onClick={this.onLinkClick}>
+            //                 {link}
+            //             </a>
+            //         </CopyableText>
+            //     </div>
+            // );
         } else if (this.props.kind === InviteKind.Invite) {
             const roomId = this.props.roomId;
             const room = MatrixClientPeg.get()?.getRoom(roomId);
