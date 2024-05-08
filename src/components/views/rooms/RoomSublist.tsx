@@ -752,7 +752,14 @@ export default class RoomSublist extends React.Component<IProps, IState> {
 
         let content: JSX.Element | undefined;
         if (this.state.roomsLoading) {
-            content = <div className="mx_RoomSublist_skeletonUI" />;
+            let skeletonLabel = _t("a11y|no_thing");
+            if (this.props.tagId === DefaultTagID.DM) {
+                skeletonLabel = _t("a11y|no_people_on_list");
+            }
+            if (this.props.tagId === DefaultTagID.Untagged) {
+                skeletonLabel = _t("a11y|no_room_joined");
+            }
+            content = <div className="mx_RoomSublist_skeletonUI">{skeletonLabel}</div>;
         } else if (visibleTiles.length > 0 && this.props.forceExpanded) {
             content = (
                 <div className="mx_RoomSublist_resizeBox mx_RoomSublist_resizeBox_forceExpanded">
@@ -877,7 +884,14 @@ export default class RoomSublist extends React.Component<IProps, IState> {
                 </React.Fragment>
             );
         } else if (this.props.showSkeleton && this.state.isExpanded) {
-            content = <div className="mx_RoomSublist_skeletonUI" />;
+            let skeletonLabel = _t("a11y|no_thing");
+            if (this.props.tagId === DefaultTagID.DM) {
+                skeletonLabel = _t("a11y|no_people_on_list");
+            }
+            if (this.props.tagId === DefaultTagID.Untagged) {
+                skeletonLabel = _t("a11y|no_room_joined");
+            }
+            content = <div className="mx_RoomSublist_skeletonUI">{skeletonLabel}</div>;
         }
 
         return (

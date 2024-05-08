@@ -11,7 +11,10 @@
         },
         "room_name": "房间 %(name)s",
         "unread_messages": "未读消息。",
-        "user_menu": "用户菜单"
+        "user_menu": "用户菜单",
+        "no_people_on_list": "名单上没有人！",
+        "no_room_joined": "没有加入房间！",
+        "no_thing": "没有什么"
     },
     "a11y_jump_first_unread_room": "跳转至第一个未读房间。",
     "action": {

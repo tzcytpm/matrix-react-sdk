@@ -11,7 +11,10 @@
         },
         "room_name": "聊天室 %(name)s",
         "unread_messages": "未讀的訊息。",
-        "user_menu": "使用者選單"
+        "user_menu": "使用者選單",
+        "no_people_on_list": "名單上沒有人！",
+        "no_room_joined": "沒有加入房間！",
+        "no_thing": "沒有什麼"
     },
     "a11y_jump_first_unread_room": "跳到第一個未讀的聊天室。",
     "action": {
