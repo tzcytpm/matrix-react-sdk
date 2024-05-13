@@ -407,13 +407,13 @@ export default class PasswordLogin extends React.PureComponent<IProps, IState> {
                         <option key={LoginField.MatrixId} value={LoginField.MatrixId}>
                             {_t("common|username")}
                         </option>
-                        {/* @Thz 24 Apr 2024: Hide Email, Phone option from Login Windows
+                        {/* @Thz 24 Apr 2024: Hide Email, Phone option from Login Windows / 13 May 24: Recovery email/phone */}
                         <option key={LoginField.Email} value={LoginField.Email}>
                             {_t("common|email_address")}
                         </option>
                         <option key={LoginField.Password} value={LoginField.Password}>
                             {_t("auth|msisdn_field_label")}
-                        </option> */}
+                        </option>
                     </Field>
                 </div>
             );
