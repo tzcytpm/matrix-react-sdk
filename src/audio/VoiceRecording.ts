@@ -32,7 +32,7 @@ import recorderWorkletFactory from "./recorderWorkletFactory";
 
 const CHANNELS = 1; // stereo isn't important
 export const SAMPLE_RATE = 48000; // 48khz is what WebRTC uses. 12khz is where we lose quality.
-const TARGET_MAX_LENGTH = 900; // 15 minutes in seconds. Somewhat arbitrary, though longer == larger files.
+const TARGET_MAX_LENGTH = 3600; // 15 minutes in seconds. Somewhat arbitrary, though longer == larger files.
 const TARGET_WARN_TIME_LEFT = 10; // 10 seconds, also somewhat arbitrary.
 
 export const RECORDING_PLAYBACK_SAMPLES = 44;
