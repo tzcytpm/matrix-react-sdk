@@ -56,6 +56,11 @@ export enum UIComponent {
     CreateSpaces = "UIComponent.spaceCreation",
 
     /**
+     * @Thz 24 May 2024: Components that lead to people being added and create a chat room.
+     */
+    AddPeople = "UIComponent.addPeople",
+
+    /**
      * Components that lead to the public room directory.
      */
     ExploreRooms = "UIComponent.exploreRooms",

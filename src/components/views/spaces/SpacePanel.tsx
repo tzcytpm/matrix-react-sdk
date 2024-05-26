@@ -223,6 +223,36 @@ const VideoRoomsButton: React.FC<MetaSpaceButtonProps> = ({ selected, isPanelCol
     );
 };
 
+/* @Thz 24 May 2024: Add People button to Space Panel */
+const AddPeopleButton: React.FC<MetaSpaceButtonProps> = ({ selected, isPanelCollapsed }) => {
+    return (
+        <MetaSpaceButton
+            spaceKey="Add People"
+            className="mx_SpaceButton_addPeople"
+            selected={selected}
+            isPanelCollapsed={isPanelCollapsed}
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();defaultDispatcher.dispatch({ action: "view_create_chat" });
+            }}
+            label="Add People"
+            size="32px"
+        />
+    );
+   /*
+    return (
+        <SpaceButton
+            data-testid="create-space-button"
+            className="mx_SpaceButton_addPeople"
+            label="Add People"
+            isNarrow={isPanelCollapsed}
+            onClick={defaultDispatcher.dispatch({ action: "view_create_chat" })}
+            size="32px"
+        />
+    );
+    */
+};
+
 const CreateSpaceButton: React.FC<Pick<IInnerSpacePanelProps, "isPanelCollapsed" | "setPanelCollapsed">> = ({
     isPanelCollapsed,
     setPanelCollapsed,
@@ -348,6 +378,12 @@ const InnerSpacePanel = React.memo<IInnerSpacePanelProps>(
                 {shouldShowComponent(UIComponent.CreateSpaces) && (
                     <CreateSpaceButton isPanelCollapsed={isPanelCollapsed} setPanelCollapsed={setPanelCollapsed} />
                 )}
+                {
+                    /* @Thz 24 May 2024: add new button "Add People" to space panel */
+                    shouldShowComponent(UIComponent.AddPeople) && (
+                        <AddPeopleButton key={"add-people"} selected={activeSpace === "add-people"} isPanelCollapsed={isPanelCollapsed} />
+                    )
+                }
             </IndicatorScrollbar>
         );
     },
