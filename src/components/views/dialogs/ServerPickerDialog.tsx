@@ -242,14 +242,14 @@ export default class ServerPickerDialog extends React.PureComponent<IProps, ISta
                         {_t("action|continue")}
                     </AccessibleButton>
 
-                    <h2>{_t("action|learn_more")}</h2>
+                    {/* <h2>{_t("action|learn_more")}</h2>
                     <ExternalLink
                         href="https://matrix.org/docs/matrix-concepts/elements-of-matrix/#homeserver"
                         target="_blank"
                         rel="noreferrer noopener"
                     >
                         {_t("auth|server_picker_learn_more")}
-                    </ExternalLink>
+                    </ExternalLink> */}
                 </form>
             </BaseDialog>
         );

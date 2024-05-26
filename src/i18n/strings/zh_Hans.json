@@ -2727,7 +2727,7 @@
             "other": "%(count)s个成员"
         },
         "create_new_room_button": "创建新房间",
-        "failed_querying_public_rooms": "查询公开房间失败",
+        "failed_querying_public_rooms": "未找到公共房间",
         "group_chat_section_title": "其他选项",
         "heading_with_query": "使用 \"%(query)s\" 来搜索",
         "heading_without_query": "搜索",

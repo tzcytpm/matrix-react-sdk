@@ -3095,8 +3095,8 @@
             "other": "%(count)s Members"
         },
         "create_new_room_button": "Create new room",
-        "failed_querying_public_rooms": "Failed to query public rooms",
-        "failed_querying_public_spaces": "Failed to query public spaces",
+        "failed_querying_public_rooms": "No public rooms found",
+        "failed_querying_public_spaces": "No public spaces found",
         "group_chat_section_title": "Other options",
         "heading_with_query": "Use \"%(query)s\" to search",
         "heading_without_query": "Search for",

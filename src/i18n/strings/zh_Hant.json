@@ -2991,7 +2991,7 @@
             "other": "%(count)s 個成員"
         },
         "create_new_room_button": "建立新聊天室",
-        "failed_querying_public_rooms": "檢索公開聊天室失敗",
+        "failed_querying_public_rooms": "找不到公共聊天室",
         "group_chat_section_title": "其他選項",
         "heading_with_query": "使用「%(query)s」搜尋",
         "heading_without_query": "搜尋",

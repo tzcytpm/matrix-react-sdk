@@ -575,7 +575,7 @@ describe("Spotlight Dialog", () => {
         jest.advanceTimersByTime(200);
         await flushPromisesWithFakeTimers();
 
-        expect(screen.getByText("Failed to query public rooms")).toBeInTheDocument();
+        expect(screen.getByText("No public rooms found")).toBeInTheDocument();
     });
 
     describe("knock rooms", () => {
