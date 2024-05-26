@@ -203,6 +203,7 @@ limitations under the License.
         &.mx_SpaceButton_home,
         &.mx_SpaceButton_favourites,
         &.mx_SpaceButton_people,
+        &.mx_SpaceButton_addPeople,
         &.mx_SpaceButton_orphans,
         &.mx_SpaceButton_videoRooms {
             .mx_SpaceButton_icon {
@@ -226,6 +227,10 @@ limitations under the License.
             mask-image: url("$(res)/img/element-icons/room/members.svg");
         }
 
+        &.mx_SpaceButton_addPeople .mx_SpaceButton_icon::before {
+            mask-image: url("$(res)/img/element-icons/room/invite.svg");
+        }
+
         &.mx_SpaceButton_orphans .mx_SpaceButton_icon::before {
             mask-image: url("$(res)/img/element-icons/roomlist/hash-circle.svg");
         }
@@ -235,9 +240,10 @@ limitations under the License.
         }
 
         &.mx_SpaceButton_new .mx_SpaceButton_icon {
+            background-color: $panel-actions;
             &::before {
-                background-color: $primary-content;
-                mask-image: url("$(res)/img/element-icons/plus.svg");
+                background-color: $secondary-content;
+                mask-image: url("$(res)/img/element-icons/space_plus.svg"); /*@Thz 26 May 2024: change icon add space */
                 transition: all 0.2s ease-in-out; /* TODO transition */
             }
         }
