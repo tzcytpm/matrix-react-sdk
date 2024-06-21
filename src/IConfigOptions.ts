@@ -110,6 +110,8 @@ export interface IConfigOptions {
     audio_stream_url?: string;
     jitsi?: {
         preferred_domain: string;
+        brand?: string; // @Thz 21 June 2024 
+        legacy_brand?: string; // @Thz 21 June 2024 
     };
     jitsi_widget?: {
         skip_built_in_welcome_screen?: boolean;
