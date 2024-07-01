@@ -133,10 +133,12 @@ export default class CreateSecretStorageDialog extends React.PureComponent<IProp
 
         let passPhraseKeySelected: SecureBackupSetupMethod;
         const setupMethods = getSecureBackupSetupMethods(cli);
-        if (setupMethods.includes(SecureBackupSetupMethod.Key)) {
-            passPhraseKeySelected = SecureBackupSetupMethod.Key;
-        } else {
+
+	// @Thz 29 June 2024: Change Passphrase to first
+        if (setupMethods.includes(SecureBackupSetupMethod.Passphrase)) {
             passPhraseKeySelected = SecureBackupSetupMethod.Passphrase;
+        } else {
+            passPhraseKeySelected = SecureBackupSetupMethod.Key;
         }
 
         const accountPassword = props.accountPassword || "";
@@ -580,8 +582,8 @@ export default class CreateSecretStorageDialog extends React.PureComponent<IProp
                     {_t("settings|key_backup|setup_secure_backup|description")}
                 </p>
                 <div className="mx_CreateSecretStorageDialog_primaryContainer" role="radiogroup">
-                    {optionKey}
                     {optionPassphrase}
+                    {optionKey}
                 </div>
                 <DialogButtons
                     primaryButton={_t("action|continue")}

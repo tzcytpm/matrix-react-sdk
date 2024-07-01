@@ -147,6 +147,9 @@ import { SessionLockStolenView } from "./auth/SessionLockStolenView";
 import { ConfirmSessionLockTheftView } from "./auth/ConfirmSessionLockTheftView";
 import { LoginSplashView } from "./auth/LoginSplashView";
 
+// @Thz 29 June 2024: show Generate Key/Passphrase on SignIn flow
+import { accessSecretStorage } from "../../SecurityManager";
+
 // legacy export
 export { default as Views } from "../../Views";
 
@@ -1309,7 +1312,16 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         this.themeWatcher.recheck();
         StorageManager.tryPersistStorage();
 
-        if (MatrixClientPeg.currentUserIsJustRegistered() && SettingsStore.getValue("FTUE.useCaseSelection") === null) {
+	// @Thz 29 June 2024: show Generate Key/Passphrase on SignIn flow
+        const cli = MatrixClientPeg.safeGet();
+        const crypto = cli.getCrypto();
+        if (!crypto) return;
+
+        const crossSigningReady =  await crypto.isCrossSigningReady();
+        const secretStorageReady = await crypto.isSecretStorageReady();
+        const allSystemsReady = crossSigningReady && secretStorageReady;
+
+        if (!allSystemsReady && MatrixClientPeg.currentUserIsJustRegistered() && SettingsStore.getValue("FTUE.useCaseSelection") === null) {
             this.setStateForNewView({ view: Views.USE_CASE_SELECTION });
 
             // Listen to changes in settings and hide the use case screen if appropriate - this is necessary because
@@ -2125,7 +2137,23 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                 />
             );
         } else if (this.state.view === Views.USE_CASE_SELECTION) {
-            view = <UseCaseSelection onFinished={(useCase): Promise<void> => this.onShowPostLoginScreen(useCase)} />;
+            // view = <UseCaseSelection onFinished={(useCase): Promise<void> => this.onShowPostLoginScreen(useCase)} />;
+	    // @Thz 29 June 2024: show Generate Key/Passphrase on SignIn flow
+            accessSecretStorage(async (): Promise<void> => {
+                    // do nothing, all is now set up correctly
+                }
+            );
+            this.viewHome();
+            view = (
+                <LoggedInView
+                    {...this.props}
+                    {...this.state}
+                    ref={this.loggedInView}
+                    matrixClient={MatrixClientPeg.safeGet()}
+                    onRegistered={this.onRegistered}
+                    currentRoomId={this.state.currentRoomId}
+                />
+            );
         } else if (this.state.view === Views.LOCK_STOLEN) {
             view = <SessionLockStolenView />;
         } else {

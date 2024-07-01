@@ -76,7 +76,11 @@ export function UserOnboardingPage({ justRegistered = false }: Props): JSX.Eleme
     if (pageUrl) {
         return <EmbeddedPage className="mx_HomePage" url={pageUrl} scrollbar={true} />;
     }
+    
+    // @Thz 29 June 2024: show Generate Key/Passphrase on SignIn flow
+    return <HomePage justRegistered={justRegistered} />;
 
+    // Exit
     return (
         <AutoHideScrollbar className="mx_UserOnboardingPage">
             <UserOnboardingHeader useCase={useCase} />
