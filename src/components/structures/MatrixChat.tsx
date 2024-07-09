@@ -101,6 +101,7 @@ import ForgotPassword from "./auth/ForgotPassword";
 import E2eSetup from "./auth/E2eSetup";
 import Registration from "./auth/Registration";
 import Login from "./auth/Login";
+import LoginSso from "./auth/LoginSso"; // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
 import ErrorBoundary from "../views/elements/ErrorBoundary";
 import VerificationRequestToast from "../views/toasts/VerificationRequestToast";
 import PerformanceMonitor, { PerformanceEntryNames } from "../../performance";
@@ -800,7 +801,9 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                 break;
             }
             case "view_welcome_page":
-                this.viewWelcome();
+                // this.viewWelcome();
+                // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
+                this.viewLoginPrivateLineSSO()
                 break;
             case Action.ViewHomePage:
                 this.viewHome(payload.justRegistered);
@@ -1083,6 +1086,17 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             view: Views.WELCOME,
         });
         this.notifyNewScreen("welcome");
+        ThemeController.isLogin = true;
+        this.themeWatcher.recheck();
+    }
+
+    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
+    private viewLoginPrivateLineSSO(otherState?: any): void {
+        this.setStateForNewView({
+            view: Views.LOGIN_SSO,
+            ...otherState,
+        });
+        this.notifyNewScreen("login_sso");
         ThemeController.isLogin = true;
         this.themeWatcher.recheck();
     }
@@ -1743,6 +1757,11 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                 params: params,
             });
             PerformanceMonitor.instance.start(PerformanceEntryNames.LOGIN);
+        } else if (screen === "login_sso") {
+		// @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
+                dis.dispatch({
+                    action: "view_welcome_page",
+                });
         } else if (screen === "forgot_password") {
             dis.dispatch({
                 action: "start_password_recovery",
@@ -1926,6 +1945,16 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         this.showScreen("login");
     };
 
+    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
+    private onLoginSeparateAccountClick = (): void => {
+        this.showScreen("login");
+    };
+
+    private onGoBackLoginSsoClicked = (): void => {
+        this.showScreen("login_sso");
+    };
+    
+    
     private onForgotPasswordClick = (): void => {
         this.showScreen("forgot_password");
     };
@@ -2087,6 +2116,25 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             }
         } else if (this.state.view === Views.WELCOME) {
             view = <Welcome />;
+        } else if (this.state.view === Views.LOGIN_SSO) {
+		// @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
+                // view = <Welcome />;
+                const showPasswordReset = SettingsStore.getValue(UIFeature.PasswordReset);
+                view = (
+                    <LoginSso
+                        isSyncing={this.state.pendingInitialSync}
+                        onLoggedIn={this.onUserCompletedLoginFlow}
+                        onRegisterClick={this.onRegisterClick}
+                        onLoginSeparateAccountClick={this.onLoginSeparateAccountClick}
+                        fallbackHsUrl={this.getFallbackHsUrl()}
+                        defaultDeviceDisplayName={this.props.defaultDeviceDisplayName}
+                        onForgotPasswordClick={showPasswordReset ? this.onForgotPasswordClick : undefined}
+                        onServerConfigChange={this.onServerConfigChange}
+                        fragmentAfterLogin={fragmentAfterLogin}
+                        defaultUsername={this.props.startingFragmentQueryParams?.defaultUsername as string | undefined}
+                        {...this.getServerProperties()}
+                    />
+                );
         } else if (this.state.view === Views.REGISTER && SettingsStore.getValue(UIFeature.Registration)) {
             const email = ThreepidInviteStore.instance.pickBestInvite()?.toEmail;
             view = (
@@ -2098,6 +2146,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                     brand={this.props.config.brand}
                     onLoggedIn={this.onRegisterFlowComplete}
                     onLoginClick={this.onLoginClick}
+                    onGoBackLoginSsoClicked={this.onGoBackLoginSsoClicked} // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
                     onServerConfigChange={this.onServerConfigChange}
                     defaultDeviceDisplayName={this.props.defaultDeviceDisplayName}
                     fragmentAfterLogin={fragmentAfterLogin}
@@ -2119,6 +2168,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                     isSyncing={this.state.pendingInitialSync}
                     onLoggedIn={this.onUserCompletedLoginFlow}
                     onRegisterClick={this.onRegisterClick}
+                    onGoBackLoginSsoClicked={this.onGoBackLoginSsoClicked} // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
                     fallbackHsUrl={this.getFallbackHsUrl()}
                     defaultDeviceDisplayName={this.props.defaultDeviceDisplayName}
                     onForgotPasswordClick={showPasswordReset ? this.onForgotPasswordClick : undefined}

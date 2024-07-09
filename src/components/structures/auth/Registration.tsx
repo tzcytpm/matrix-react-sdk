@@ -79,6 +79,8 @@ interface IProps {
     onLoggedIn(params: IMatrixClientCreds, password: string): Promise<void>;
     // registration shouldn't know or care how login is done.
     onLoginClick(): void;
+    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
+    onGoBackLoginSsoClicked(): void;
     onServerConfigChange(config: ValidatedServerConfig): void;
 }
 
@@ -468,6 +470,13 @@ export default class Registration extends React.Component<IProps, IState> {
         this.props.onLoginClick();
     };
 
+    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
+    private onGoBackLoginSsoClicked = (ev: ButtonEvent): void => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        this.props.onGoBackLoginSsoClicked();
+    };
+
     private onGoToFormClicked = (ev: ButtonEvent): void => {
         ev.preventDefault();
         ev.stopPropagation();
@@ -597,7 +606,7 @@ export default class Registration extends React.Component<IProps, IState> {
 
             return (
                 <React.Fragment>
-                    {ssoSection}
+                    {/* {ssoSection} */}
                     <RegistrationForm
                         defaultUsername={this.state.formVals.username}
                         defaultEmail={this.state.formVals.email}
@@ -635,19 +644,26 @@ export default class Registration extends React.Component<IProps, IState> {
         }
 
         const signIn = (
-            <span className="mx_AuthBody_changeFlow">
-                {_t(
-                    "auth|sign_in_instead_prompt",
-                    {},
-                    {
-                        a: (sub) => (
-                            <AccessibleButton kind="link_inline" onClick={this.onLoginClick}>
-                                {sub}
-                            </AccessibleButton>
-                        ),
-                    },
-                )}
-            </span>
+            <div>
+                <span className="mx_AuthBody_changeFlow">
+                    {_t(
+                        "auth|sign_in_instead_prompt",
+                        {},
+                        {
+                            a: (sub) => (
+                                <AccessibleButton kind="link_inline" onClick={this.onLoginClick}>
+                                    {sub}
+                                </AccessibleButton>
+                            ),
+                        },
+                    )}
+                </span>
+                <span className="mx_AuthBody_changeFlow">
+                    <AccessibleButton kind="link_inline"  onClick={this.onGoBackLoginSsoClicked}>
+                        {_t("action|go_back")}
+                    </AccessibleButton>
+                </span>
+            </div>
         );
 
         // Only show the 'go back' button if you're not looking at the form
@@ -743,7 +759,7 @@ export default class Registration extends React.Component<IProps, IState> {
                         {this.renderRegisterComponent()}
                     </div>
                     <div className="mx_Register_footerActions">
-                        {goBack}
+                        {/* {goBack} */}
                         {signIn}
                     </div>
                 </Fragment>

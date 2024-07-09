@@ -19,27 +19,27 @@ import classNames from "classnames";
 import { logger } from "matrix-js-sdk/src/logger";
 import { SSOFlow, SSOAction } from "matrix-js-sdk/src/matrix";
 
-import { _t, UserFriendlyError } from "../../../languageHandler";
-import Login, { ClientLoginFlow, OidcNativeFlow } from "../../../Login";
-import { messageForConnectionError, messageForLoginError } from "../../../utils/ErrorUtils";
-import AutoDiscoveryUtils from "../../../utils/AutoDiscoveryUtils";
-import AuthPage from "../../views/auth/AuthPage";
-import PlatformPeg from "../../../PlatformPeg";
-import SettingsStore from "../../../settings/SettingsStore";
-import { UIFeature } from "../../../settings/UIFeature";
-import { IMatrixClientCreds } from "../../../MatrixClientPeg";
-import PasswordLogin from "../../views/auth/PasswordLogin";
-import InlineSpinner from "../../views/elements/InlineSpinner";
-import Spinner from "../../views/elements/Spinner";
-import SSOButtons from "../../views/elements/SSOButtons";
-import ServerPicker from "../../views/elements/ServerPicker";
-import AuthBody from "../../views/auth/AuthBody";
-import AuthHeader from "../../views/auth/AuthHeader";
-import AccessibleButton, { ButtonEvent } from "../../views/elements/AccessibleButton";
-import { ValidatedServerConfig } from "../../../utils/ValidatedServerConfig";
-import { filterBoolean } from "../../../utils/arrays";
-import { Features } from "../../../settings/Settings";
-import { startOidcLogin } from "../../../utils/oidc/authorize";
+import { _t, UserFriendlyError } from "matrix-react-sdk/src/languageHandler";
+import Login, { ClientLoginFlow, OidcNativeFlow } from "matrix-react-sdk/src/Login";
+import { messageForConnectionError, messageForLoginError } from "matrix-react-sdk/src/utils/ErrorUtils";
+import AutoDiscoveryUtils from "matrix-react-sdk/src/utils/AutoDiscoveryUtils";
+import AuthPage from "matrix-react-sdk/src/components/views/auth/AuthPage";
+import PlatformPeg from "matrix-react-sdk/src/PlatformPeg";
+import SettingsStore from "matrix-react-sdk/src/settings/SettingsStore";
+import { UIFeature } from "matrix-react-sdk/src/settings/UIFeature";
+import { IMatrixClientCreds } from "matrix-react-sdk/src/MatrixClientPeg";
+import PasswordLogin from "matrix-react-sdk/src/components/views/auth/PasswordLogin";
+import InlineSpinner from "matrix-react-sdk/src/components/views/elements/InlineSpinner";
+import Spinner from "matrix-react-sdk/src/components/views/elements/Spinner";
+import SSOButtons from "matrix-react-sdk/src/components/views/elements/SSOButtons";
+import ServerPicker from "matrix-react-sdk/src/components/views/elements/ServerPicker";
+import AuthBody from "matrix-react-sdk/src/components/views/auth/AuthBody";
+import AuthHeader from "matrix-react-sdk/src/components/views/auth/AuthHeader";
+import AccessibleButton, { ButtonEvent } from "matrix-react-sdk/src/components/views/elements/AccessibleButton";
+import { ValidatedServerConfig } from "matrix-react-sdk/src/utils/ValidatedServerConfig";
+import { filterBoolean } from "matrix-react-sdk/src/utils/arrays";
+import { Features } from "matrix-react-sdk/src/settings/Settings";
+import { startOidcLogin } from "matrix-react-sdk/src/utils/oidc/authorize";
 
 interface IProps {
     serverConfig: ValidatedServerConfig;
@@ -63,8 +63,7 @@ interface IProps {
 
     // login shouldn't know or care how registration, password recovery, etc is done.
     onRegisterClick(): void;
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    onGoBackLoginSsoClicked(): void;
+    onLoginSeparateAccountClick(): void;
     onForgotPasswordClick?(): void;
     onServerConfigChange(config: ValidatedServerConfig): void;
 }
@@ -132,14 +131,14 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
         // map from login step type to a function which will render a control
         // letting you do that login type
         this.stepRendererMap = {
-            "m.login.password": this.renderPasswordStep,
+            // "m.login.password": this.renderPasswordStep,
 
             // CAS and SSO are the same thing, modulo the url we link to
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            "m.login.cas": () => this.renderSsoStep("cas"),
+            // "m.login.cas": () => this.renderSsoStep("cas"),
             // eslint-disable-next-line @typescript-eslint/naming-convention
             "m.login.sso": () => this.renderSsoStep("sso"),
-            "oidcNativeFlow": () => this.renderOidcNativeStep(),
+            // "oidcNativeFlow": () => this.renderOidcNativeStep(),
         };
     }
 
@@ -300,13 +299,6 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
         this.props.onRegisterClick();
     };
 
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    public onGoBackLoginSsoClicked = (ev: ButtonEvent): void => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        this.props.onGoBackLoginSsoClicked();
-    };
-
     public onTryRegisterClick = (ev: ButtonEvent): void => {
         const hasPasswordFlow = this.state.flows?.find((flow) => flow.type === "m.login.password");
         const ssoFlow = this.state.flows?.find((flow) => flow.type === "m.login.sso" || flow.type === "m.login.cas");
@@ -329,6 +321,17 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
             this.onRegisterClick(ev);
         }
     };
+
+    public onLoginSeparateAccountClick = (ev: ButtonEvent): void => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        this.props.onLoginSeparateAccountClick();
+    };
+
+    public onTryLoginSeparateAccountClick  = (ev: ButtonEvent): void => {
+        // Don't intercept - just go through to the register page
+        this.onLoginSeparateAccountClick(ev);
+    }
 
     private async checkServerLiveliness({
         hsUrl,
@@ -430,7 +433,7 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
         if (!this.state.flows) return null;
 
         // this is the ideal order we want to show the flows in
-        const order = ["oidcNativeFlow", "m.login.password"]; // @Thz 09 July 2024: remove  "m.login.sso"
+        const order = ["oidcNativeFlow", "m.login.password", "m.login.sso"];
 
         const flows = filterBoolean(order.map((type) => this.state.flows?.find((flow) => flow.type === type)));
         return (
@@ -440,6 +443,42 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
                     return <React.Fragment key={flow.type}>{stepRenderer()}</React.Fragment>;
                 })}
             </React.Fragment>
+        );
+    }
+
+    // @Thz 09 July 2024: Adding PrivateLine SSO flow
+    public renderLoginPrivateLineSsoComponentForFlows(): ReactNode {
+        if (!this.state.flows) return null;
+
+        // this is the ideal order we want to show the flows in
+        const order = ["m.login.sso"];
+        let sign_in_or;
+        const flows = filterBoolean(order.map((type) => this.state.flows?.find((flow) => flow.type === type)));
+        if (flows.length>0){
+            sign_in_or = (
+                <h2 className="mx_AuthBody_centered mx_AuthBody_or_centered">
+                    {_t("auth|sso_or_username_password", {
+                        ssoButtons: "",
+                        usernamePassword: "",
+                    }).trim()}
+                </h2>
+            );
+        }
+        return (
+            <React.Fragment>
+                {flows.map((flow) => {
+                    const stepRenderer = this.stepRendererMap[flow.type];
+                    return <React.Fragment key={flow.type}>{stepRenderer()}</React.Fragment>;
+                })}
+                {sign_in_or}
+                <input
+                    className="mx_Login_submit"
+                    type="button"
+                    onClick={this.onTryLoginSeparateAccountClick}
+                    value={_t("action|sign_in")}
+                />
+            </React.Fragment>
+            
         );
     }
 
@@ -538,26 +577,19 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
             );
         } else if (SettingsStore.getValue(UIFeature.Registration)) {
             footer = (
-                <div>
-                    <span className="mx_AuthBody_changeFlow">
-                        {_t(
-                            "auth|create_account_prompt",
-                            {},
-                            {
-                                a: (sub) => (
-                                    <AccessibleButton kind="link_inline" onClick={this.onTryRegisterClick}>
-                                        {sub}
-                                    </AccessibleButton>
-                                ),
-                            },
-                        )}
-                    </span>
-                    <span className="mx_AuthBody_changeFlow">
-                    <AccessibleButton kind="link_inline"  onClick={this.onGoBackLoginSsoClicked}>
-                        {_t("action|go_back")}
-                    </AccessibleButton>
-                    </span>
-                </div>
+                <span className="mx_AuthBody_changeFlow">
+                    {_t(
+                        "auth|create_account_prompt",
+                        {},
+                        {
+                            a: (sub) => (
+                                <AccessibleButton kind="link_inline" onClick={this.onTryRegisterClick}>
+                                    {sub}
+                                </AccessibleButton>
+                            ),
+                        },
+                    )}
+                </span>
             );
         }
 
@@ -575,7 +607,7 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
                         serverConfig={this.props.serverConfig}
                         onServerConfigChange={this.props.onServerConfigChange}
                     />
-                    {this.renderLoginComponentForFlows()}
+                    {this.renderLoginPrivateLineSsoComponentForFlows()}
                     {footer}
                 </AuthBody>
             </AuthPage>
