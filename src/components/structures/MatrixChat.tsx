@@ -101,7 +101,6 @@ import ForgotPassword from "./auth/ForgotPassword";
 import E2eSetup from "./auth/E2eSetup";
 import Registration from "./auth/Registration";
 import Login from "./auth/Login";
-import LoginSso from "./auth/LoginSso"; // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
 import ErrorBoundary from "../views/elements/ErrorBoundary";
 import VerificationRequestToast from "../views/toasts/VerificationRequestToast";
 import PerformanceMonitor, { PerformanceEntryNames } from "../../performance";
@@ -147,6 +146,8 @@ import { checkSessionLockFree, getSessionLock } from "../../utils/SessionLock";
 import { SessionLockStolenView } from "./auth/SessionLockStolenView";
 import { ConfirmSessionLockTheftView } from "./auth/ConfirmSessionLockTheftView";
 import { LoginSplashView } from "./auth/LoginSplashView";
+import { LoginSsoView} from "./auth/LoginSso"; // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
+
 
 // @Thz 29 June 2024: show Generate Key/Passphrase on SignIn flow
 import { accessSecretStorage } from "../../SecurityManager";
@@ -346,6 +347,9 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
+        logger.error("getSessionLock - onSessionLockStolen");
+
+
         // If the user was soft-logged-out, we want to make the SoftLogout component responsible for doing any
         // token auth (rather than Lifecycle.attemptDelegatedAuthLogin), since SoftLogout knows about submitting the
         // device ID and preserving the session.
@@ -359,12 +363,16 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
+        logger.error("isSoftLogout - isSoftLogout");
+
         // Otherwise, the first thing to do is to try the token params in the query-string
         const delegatedAuthSucceeded = await Lifecycle.attemptDelegatedAuthLogin(
             this.props.realQueryParams,
             this.props.defaultDeviceDisplayName,
             this.getFragmentAfterLogin(),
         );
+
+        logger.error("delegatedAuthSucceeded - delegatedAuthSucceeded");
 
         // remove the loginToken or auth code from the URL regardless
         if (
@@ -374,6 +382,9 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         ) {
             this.props.onTokenLoginCompleted();
         }
+
+        logger.error("onTokenLoginCompleted - onTokenLoginCompleted");
+
 
         if (delegatedAuthSucceeded) {
             // token auth/OIDC worked! Time to fire up the client.
@@ -387,13 +398,20 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
+        logger.error("restoreFromLocalStorage - restoreFromLocalStorage");
+
         // if the user has followed a login or register link, don't reanimate
         // the old creds, but rather go straight to the relevant page
         const firstScreen = this.screenAfterLogin ? this.screenAfterLogin.screen : null;
         const restoreSuccess = await this.loadSession();
         if (restoreSuccess) {
+            logger.error("restoreSuccess - restoreSuccess");
+
             return;
         }
+
+        logger.error("loadSession - loadSession");
+
 
         // If the first screen is an auth screen, we don't want to wait for login.
         if (firstScreen !== null && AUTH_SCREENS.includes(firstScreen)) {
@@ -416,6 +434,29 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
     private async postLoginSetup(): Promise<void> {
         const cli = MatrixClientPeg.safeGet();
         const cryptoEnabled = cli.isCryptoEnabled();
+
+        // @Thz 05 July 2024: TODO: Worked but we need make sure it show only first login, 
+        // and if Security Key/Phrase was setup, then it will not show again.
+        const crypto = cli.getCrypto();
+        if (!crypto) return;
+        
+        const crossSigningReady =  await crypto.isCrossSigningReady();
+        const secretStorageReady = await crypto.isSecretStorageReady();
+        const allSystemsReady = crossSigningReady && secretStorageReady;
+        if (!allSystemsReady) {
+            this.setStateForNewView({ view: Views.USE_CASE_SELECTION });
+            SettingsStore.watchSetting(
+                "FTUE.useCaseSelection",
+                null,
+                (originalSettingName, changedInRoomId, atLevel, newValueAtLevel, newValue) => {
+                    if (newValue !== null && this.state.view === Views.USE_CASE_SELECTION) {
+                        this.onShowPostLoginScreen();
+                    }
+                },
+            );
+            return;
+        }
+
         if (!cryptoEnabled) {
             this.onLoggedIn();
         }
@@ -459,6 +500,29 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             // if cross-signing is not yet set up, do so now if possible.
             this.setStateForNewView({ view: Views.E2E_SETUP });
         } else {
+            // @Thz 05 July 2024: START --- show Generate Key/Passphrase on SignIn flow
+            const cli = MatrixClientPeg.safeGet();
+            const crypto = cli.getCrypto();
+            if (!crypto) return;
+            
+            const crossSigningReady =  await crypto.isCrossSigningReady();
+            const secretStorageReady = await crypto.isSecretStorageReady();
+            const allSystemsReady = crossSigningReady && secretStorageReady;
+            if (!allSystemsReady) {}
+                this.setStateForNewView({ view: Views.USE_CASE_SELECTION });
+                SettingsStore.watchSetting(
+                    "FTUE.useCaseSelection",
+                    null,
+                    (originalSettingName, changedInRoomId, atLevel, newValueAtLevel, newValue) => {
+                        if (newValue !== null && this.state.view === Views.USE_CASE_SELECTION) {
+                            this.onShowPostLoginScreen();
+                        }
+                    },
+                );
+            // }
+            return;
+            // @Thz 05 July 2024: END ---
+
             this.onLoggedIn();
         }
         this.setState({ pendingInitialSync: false });
@@ -802,8 +866,8 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             }
             case "view_welcome_page":
                 // this.viewWelcome();
-                // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-                this.viewLoginPrivateLineSSO()
+                this.viewLoginPrivateLineSSO();
+
                 break;
             case Action.ViewHomePage:
                 this.viewHome(payload.justRegistered);
@@ -2121,18 +2185,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                 // view = <Welcome />;
                 const showPasswordReset = SettingsStore.getValue(UIFeature.PasswordReset);
                 view = (
-                    <LoginSso
-                        isSyncing={this.state.pendingInitialSync}
-                        onLoggedIn={this.onUserCompletedLoginFlow}
-                        onRegisterClick={this.onRegisterClick}
-                        onLoginSeparateAccountClick={this.onLoginSeparateAccountClick}
-                        fallbackHsUrl={this.getFallbackHsUrl()}
-                        defaultDeviceDisplayName={this.props.defaultDeviceDisplayName}
-                        onForgotPasswordClick={showPasswordReset ? this.onForgotPasswordClick : undefined}
-                        onServerConfigChange={this.onServerConfigChange}
-                        fragmentAfterLogin={fragmentAfterLogin}
-                        defaultUsername={this.props.startingFragmentQueryParams?.defaultUsername as string | undefined}
-                        {...this.getServerProperties()}
+                    <LoginSsoView
                     />
                 );
         } else if (this.state.view === Views.REGISTER && SettingsStore.getValue(UIFeature.Registration)) {
