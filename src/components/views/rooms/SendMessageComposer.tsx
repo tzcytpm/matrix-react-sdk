@@ -64,7 +64,6 @@ import DocumentPosition from "../../../editor/position";
 import { ComposerType } from "../../../dispatcher/payloads/ComposerInsertPayload";
 import { getSlashCommand, isSlashCommand, runSlashCommand, shouldSendAnyway } from "../../../editor/commands";
 import { KeyBindingAction } from "../../../accessibility/KeyboardShortcuts";
-import { PosthogAnalytics } from "../../../PosthogAnalytics";
 import { addReplyToMessageContent } from "../../../utils/Reply";
 import { doMaybeLocalRoomAction } from "../../../utils/local-room";
 import { Caret } from "../../../editor/caret";
@@ -450,19 +449,6 @@ export class SendMessageComposer extends React.Component<ISendMessageComposerPro
         if (model.isEmpty) {
             return;
         }
-
-        const posthogEvent: ComposerEvent = {
-            eventName: "Composer",
-            isEditing: false,
-            messageType: "Text",
-            isReply: !!this.props.replyToEvent,
-            inThread: this.props.relation?.rel_type === THREAD_RELATION_TYPE.name,
-        };
-        if (posthogEvent.inThread && this.props.relation!.event_id) {
-            const threadRoot = this.props.room.findEventById(this.props.relation!.event_id);
-            posthogEvent.startsThread = threadRoot?.getThread()?.events.length === 1;
-        }
-        PosthogAnalytics.instance.trackEvent<ComposerEvent>(posthogEvent);
 
         // Replace emoticon at the end of the message
         if (SettingsStore.getValue("MessageComposerInput.autoReplaceEmoji")) {

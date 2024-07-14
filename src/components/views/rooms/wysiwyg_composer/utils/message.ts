@@ -24,7 +24,6 @@ import {
 } from "matrix-js-sdk/src/matrix";
 import { RoomMessageEventContent } from "matrix-js-sdk/src/types";
 
-import { PosthogAnalytics } from "../../../../../PosthogAnalytics";
 import SettingsStore from "../../../../../settings/SettingsStore";
 import { decorateStartSendingTime, sendRoundTripMetric } from "../../../../../sendTimePerformanceMetrics";
 import { RoomPermalinkCreator } from "../../../../../utils/permalinks/Permalinks";
@@ -65,22 +64,6 @@ export async function sendMessage(
     if (!roomId) {
         return;
     }
-
-    const posthogEvent: ComposerEvent = {
-        eventName: "Composer",
-        isEditing: false,
-        messageType: "Text",
-        isReply: Boolean(replyToEvent),
-        // TODO thread
-        inThread: relation?.rel_type === THREAD_RELATION_TYPE.name,
-    };
-
-    // TODO thread
-    /*if (posthogEvent.inThread) {
-        const threadRoot = room.findEventById(relation?.event_id);
-        posthogEvent.startsThread = threadRoot?.getThread()?.events.length === 1;
-    }*/
-    PosthogAnalytics.instance.trackEvent<ComposerEvent>(posthogEvent);
 
     let content: RoomMessageEventContent | null = null;
 
@@ -201,14 +184,6 @@ export async function editMessage(
     { roomContext, mxClient, editorStateTransfer }: EditMessageParams,
 ): Promise<ISendEventResponse | undefined> {
     const editedEvent = editorStateTransfer.getEvent();
-
-    PosthogAnalytics.instance.trackEvent<ComposerEvent>({
-        eventName: "Composer",
-        isEditing: true,
-        messageType: "Text",
-        inThread: Boolean(editedEvent?.getThread()),
-        isReply: Boolean(editedEvent.replyEventId),
-    });
 
     // TODO emoji
     // Replace emoticon at the end of the message

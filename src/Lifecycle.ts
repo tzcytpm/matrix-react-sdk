@@ -46,7 +46,6 @@ import DeviceListener from "./DeviceListener";
 import { Jitsi } from "./widgets/Jitsi";
 import { SSO_HOMESERVER_URL_KEY, SSO_ID_SERVER_URL_KEY, SSO_IDP_ID_KEY } from "./BasePlatform";
 import ThreepidInviteStore from "./stores/ThreepidInviteStore";
-import { PosthogAnalytics } from "./PosthogAnalytics";
 import LegacyCallHandler from "./LegacyCallHandler";
 import LifecycleCustomisations from "./customisations/Lifecycle";
 import ErrorDialog from "./components/views/dialogs/ErrorDialog";
@@ -790,10 +789,6 @@ async function doSetLoggedIn(credentials: IMatrixClientCreds, clearStorageEnable
 
     setSentryUser(credentials.userId);
 
-    if (PosthogAnalytics.instance.isEnabled()) {
-        PosthogAnalytics.instance.startListeningToSettingsChanges(client);
-    }
-
     if (credentials.freshLogin && SettingsStore.getValue("feature_dehydration")) {
         // If we just logged in, try to rehydrate a device instead of using a
         // new device.  If it succeeds, we'll get a new device ID, so make sure
@@ -895,8 +890,6 @@ async function doLogout(client: MatrixClient, oidcClientStore?: OidcClientStore)
 export function logout(oidcClientStore?: OidcClientStore): void {
     const client = MatrixClientPeg.get();
     if (!client) return;
-
-    PosthogAnalytics.instance.logout();
 
     if (client.isGuest()) {
         // logout doesn't work for guest sessions

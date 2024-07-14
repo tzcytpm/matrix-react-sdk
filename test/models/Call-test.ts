@@ -55,7 +55,6 @@ import { WidgetMessagingStore } from "../../src/stores/widgets/WidgetMessagingSt
 import ActiveWidgetStore, { ActiveWidgetStoreEvent } from "../../src/stores/ActiveWidgetStore";
 import { ElementWidgetActions } from "../../src/stores/widgets/ElementWidgetActions";
 import SettingsStore from "../../src/settings/SettingsStore";
-import { PosthogAnalytics } from "../../src/PosthogAnalytics";
 
 jest.spyOn(MediaDeviceHandler, "getDevices").mockResolvedValue({
     [MediaDeviceKindEnum.AudioInput]: [
@@ -774,39 +773,6 @@ describe("ElementCall", () => {
             SettingsStore.getValue = originalGetValue;
         });
 
-        it("passes analyticsID through widget URL", async () => {
-            client.getAccountData.mockImplementation((eventType: string) => {
-                if (eventType === PosthogAnalytics.ANALYTICS_EVENT_TYPE) {
-                    return new MatrixEvent({ content: { id: "123456789987654321", pseudonymousAnalyticsOptIn: true } });
-                }
-                return undefined;
-            });
-            await ElementCall.create(room);
-            const call = Call.get(room);
-            if (!(call instanceof ElementCall)) throw new Error("Failed to create call");
-
-            const urlParams = new URLSearchParams(new URL(call.widget.url).hash.slice(1));
-            expect(urlParams.get("analyticsID")).toBe("123456789987654321");
-            call.destroy();
-        });
-
-        it("does not pass analyticsID if `pseudonymousAnalyticsOptIn` set to false", async () => {
-            client.getAccountData.mockImplementation((eventType: string) => {
-                if (eventType === PosthogAnalytics.ANALYTICS_EVENT_TYPE) {
-                    return new MatrixEvent({
-                        content: { id: "123456789987654321", pseudonymousAnalyticsOptIn: false },
-                    });
-                }
-                return undefined;
-            });
-            await ElementCall.create(room);
-            const call = Call.get(room);
-            if (!(call instanceof ElementCall)) throw new Error("Failed to create call");
-
-            const urlParams = new URLSearchParams(new URL(call.widget.url).hash.slice(1));
-            expect(urlParams.get("analyticsID")).toBe("");
-            call.destroy();
-        });
 
         it("passes feature_allow_screen_share_only_mode setting to allowVoipWithNoMedia url param", async () => {
             // Now test with the preference set to true
@@ -829,20 +795,6 @@ describe("ElementCall", () => {
             call.destroy();
         });
 
-        it("passes empty analyticsID if the id is not in the account data", async () => {
-            client.getAccountData.mockImplementation((eventType: string) => {
-                if (eventType === PosthogAnalytics.ANALYTICS_EVENT_TYPE) {
-                    return new MatrixEvent({ content: {} });
-                }
-                return undefined;
-            });
-            await ElementCall.create(room);
-            const call = Call.get(room);
-            if (!(call instanceof ElementCall)) throw new Error("Failed to create call");
-
-            const urlParams = new URLSearchParams(new URL(call.widget.url).hash.slice(1));
-            expect(urlParams.get("analyticsID")).toBe("");
-        });
     });
 
     describe("instance in a non-video room", () => {

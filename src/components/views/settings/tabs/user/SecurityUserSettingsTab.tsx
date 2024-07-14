@@ -35,7 +35,6 @@ import SettingsFlag from "../../../elements/SettingsFlag";
 import CrossSigningPanel from "../../CrossSigningPanel";
 import EventIndexPanel from "../../EventIndexPanel";
 import InlineSpinner from "../../../elements/InlineSpinner";
-import { PosthogAnalytics } from "../../../../../PosthogAnalytics";
 import { showDialog as showAnalyticsLearnMoreDialog } from "../../../dialogs/AnalyticsLearnMoreDialog";
 import { privateShouldBeEncrypted } from "../../../../../utils/rooms";
 import type { IServerVersions } from "matrix-js-sdk/src/matrix";
@@ -307,34 +306,6 @@ export default class SecurityUserSettingsTab extends React.Component<IProps, ISt
             );
         }
 
-        let privacySection;
-        if (PosthogAnalytics.instance.isEnabled()) {
-            const onClickAnalyticsLearnMore = (): void => {
-                showAnalyticsLearnMoreDialog({
-                    primaryButton: _t("action|ok"),
-                    hasCancel: false,
-                });
-            };
-            privacySection = (
-                <SettingsSection heading={_t("common|privacy")}>
-                    <SettingsSubsection
-                        heading={_t("common|analytics")}
-                        description={_t("settings|security|analytics_description")}
-                    >
-                        <AccessibleButton kind="link" onClick={onClickAnalyticsLearnMore}>
-                            {_t("action|learn_more")}
-                        </AccessibleButton>
-                        {PosthogAnalytics.instance.isEnabled() && (
-                            <SettingsFlag name="pseudonymousAnalyticsOptIn" level={SettingLevel.ACCOUNT} />
-                        )}
-                    </SettingsSubsection>
-                    <SettingsSubsection heading={_t("settings|sessions|title")}>
-                        <SettingsFlag name="deviceClientInformationOptIn" level={SettingLevel.ACCOUNT} />
-                    </SettingsSubsection>
-                </SettingsSection>
-            );
-        }
-
         let advancedSection;
         if (SettingsStore.getValue(UIFeature.AdvancedSettings)) {
             const ignoreUsersPanel = this.renderIgnoredUsers();
@@ -361,7 +332,6 @@ export default class SecurityUserSettingsTab extends React.Component<IProps, ISt
                     {crossSigning}
                     <CryptographyPanel />
                 </SettingsSection>
-                {privacySection}
                 {advancedSection}
             </SettingsTab>
         );

@@ -50,7 +50,6 @@ import MemberTile from "./MemberTile";
 import BaseAvatar from "../avatars/BaseAvatar";
 import { shouldShowComponent } from "../../../customisations/helpers/UIComponents";
 import { UIComponent } from "../../../settings/UIFeature";
-import PosthogTrackers from "../../../PosthogTrackers";
 import { SDKContext } from "../../../contexts/SDKContext";
 import { canInviteTo } from "../../../utils/room/canInviteTo";
 import { inviteToRoom } from "../../../utils/room/inviteToRoom";
@@ -441,8 +440,6 @@ export default class MemberList extends React.Component<IProps, IState> {
     }
 
     private onInviteButtonClick = (ev: ButtonEvent): void => {
-        PosthogTrackers.trackInteraction("WebRightPanelMemberListInviteButton", ev);
-
         const cli = MatrixClientPeg.safeGet();
         const room = cli.getRoom(this.props.roomId)!;
 

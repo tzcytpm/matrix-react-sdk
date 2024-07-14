@@ -76,7 +76,6 @@ import { TimelineRenderingType } from "../../../contexts/RoomContext";
 import RightPanelStore from "../../../stores/right-panel/RightPanelStore";
 import { IRightPanelCardState } from "../../../stores/right-panel/RightPanelStoreIPanelState";
 import UserIdentifierCustomisations from "../../../customisations/UserIdentifier";
-import PosthogTrackers from "../../../PosthogTrackers";
 import { ViewRoomPayload } from "../../../dispatcher/payloads/ViewRoomPayload";
 import { DirectoryMember, startDmOnFirstMessage } from "../../../utils/direct-messages";
 import { SdkContextClass } from "../../../contexts/SDKContext";
@@ -504,8 +503,6 @@ export const UserOptionsSection: React.FC<{
                         description,
                     });
                 }
-
-                PosthogTrackers.trackInteraction("WebRightPanelRoomUserInfoInviteButton", ev);
             };
 
             inviteUserButton = (
@@ -1754,7 +1751,6 @@ const UserInfo: React.FC<IProps> = ({ user, room, onClose, phase = RightPanelPha
             cardState={cardState}
             onBack={(ev: ButtonEvent) => {
                 if (RightPanelStore.instance.previousCard.phase === RightPanelPhases.RoomMemberList) {
-                    PosthogTrackers.trackInteraction("WebRightPanelRoomUserInfoBackButton", ev);
                 }
             }}
         >

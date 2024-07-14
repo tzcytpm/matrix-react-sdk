@@ -37,7 +37,6 @@ import {
 } from "../../../stores/notifications/RoomNotificationStateStore";
 import { NotificationLevel } from "../../../stores/notifications/NotificationLevel";
 import { SummarizedNotificationState } from "../../../stores/notifications/SummarizedNotificationState";
-import PosthogTrackers from "../../../PosthogTrackers";
 import { ButtonEvent } from "../elements/AccessibleButton";
 import { doesRoomOrThreadHaveUnreadMessages } from "../../../Unread";
 
@@ -242,7 +241,6 @@ export default class LegacyRoomHeaderButtons extends HeaderButtons<IProps> {
             RightPanelStore.instance.togglePanel(this.props.room?.roomId ?? null);
         } else {
             showThreadPanel();
-            PosthogTrackers.trackInteraction("WebRoomHeaderButtonsThreadsButton", ev);
         }
     };
 

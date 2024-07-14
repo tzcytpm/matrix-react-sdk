@@ -28,7 +28,6 @@ import { ViewRoomPayload } from "../../../dispatcher/payloads/ViewRoomPayload";
 import { useEventEmitterState } from "../../../hooks/useEventEmitter";
 import { _t, _td, TranslationKey } from "../../../languageHandler";
 import { MatrixClientPeg } from "../../../MatrixClientPeg";
-import PosthogTrackers from "../../../PosthogTrackers";
 import SettingsStore from "../../../settings/SettingsStore";
 import { useFeatureEnabled } from "../../../hooks/useSettings";
 import { UIComponent } from "../../../settings/UIFeature";
@@ -142,10 +141,6 @@ const DmAuxButton: React.FC<IAuxButtonProps> = ({ tabIndex, dispatcher = default
                                     e.stopPropagation();
                                     closeMenu();
                                     defaultDispatcher.dispatch({ action: "view_create_chat" });
-                                    PosthogTrackers.trackInteraction(
-                                        "WebRoomListRoomsSublistPlusMenuCreateChatItem",
-                                        e,
-                                    );
                                 }}
                             />
                         )}
@@ -189,7 +184,6 @@ const DmAuxButton: React.FC<IAuxButtonProps> = ({ tabIndex, dispatcher = default
                 tabIndex={tabIndex}
                 onClick={(e) => {
                     dispatcher.dispatch({ action: "view_create_chat" });
-                    PosthogTrackers.trackInteraction("WebRoomListRoomsSublistPlusMenuCreateChatItem", e);
                 }}
                 className="mx_RoomSublist_auxButton"
                 aria-label={_t("action|start_chat")}
@@ -234,7 +228,6 @@ const UntaggedAuxButton: React.FC<IAuxButtonProps> = ({ tabIndex }) => {
                             room_id: activeSpace.roomId,
                             metricsTrigger: undefined, // other
                         });
-                        PosthogTrackers.trackInteraction("WebRoomListRoomsSublistPlusMenuExploreRoomsItem", e);
                     }}
                 />
                 {showCreateRoom ? (
@@ -247,7 +240,6 @@ const UntaggedAuxButton: React.FC<IAuxButtonProps> = ({ tabIndex }) => {
                                 e.stopPropagation();
                                 closeMenu();
                                 showCreateNewRoom(activeSpace);
-                                PosthogTrackers.trackInteraction("WebRoomListRoomsSublistPlusMenuCreateRoomItem", e);
                             }}
                             disabled={!canAddRooms}
                             tooltip={canAddRooms ? undefined : _t("spaces|error_no_permission_create_room")}
@@ -300,7 +292,6 @@ const UntaggedAuxButton: React.FC<IAuxButtonProps> = ({ tabIndex }) => {
                                 e.stopPropagation();
                                 closeMenu();
                                 defaultDispatcher.dispatch({ action: "view_create_room" });
-                                PosthogTrackers.trackInteraction("WebRoomListRoomsSublistPlusMenuCreateRoomItem", e);
                             }}
                         />
                         {videoRoomsEnabled && (
@@ -332,7 +323,6 @@ const UntaggedAuxButton: React.FC<IAuxButtonProps> = ({ tabIndex }) => {
                             e.preventDefault();
                             e.stopPropagation();
                             closeMenu();
-                            PosthogTrackers.trackInteraction("WebRoomListRoomsSublistPlusMenuExploreRoomsItem", e);
                             defaultDispatcher.fire(Action.ViewRoomDirectory);
                         }}
                     />

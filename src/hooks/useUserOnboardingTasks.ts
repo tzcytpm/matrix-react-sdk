@@ -24,7 +24,6 @@ import defaultDispatcher from "../dispatcher/dispatcher";
 import { _t } from "../languageHandler";
 import Modal from "../Modal";
 import { Notifier } from "../Notifier";
-import PosthogTrackers from "../PosthogTrackers";
 import SdkConfig from "../SdkConfig";
 import { UseCase } from "../settings/enums/UseCase";
 import { useSettingValue } from "./useSettings";
@@ -50,7 +49,6 @@ export interface UserOnboardingTaskWithResolvedCompletion extends Omit<UserOnboa
 }
 
 const onClickStartDm = (ev: ButtonEvent): void => {
-    PosthogTrackers.trackInteraction("WebUserOnboardingTaskSendDm", ev);
     defaultDispatcher.dispatch({ action: "view_create_chat" });
 };
 
@@ -108,7 +106,6 @@ const tasks: UserOnboardingTask[] = [
         action: {
             label: _t("onboarding|download_app_action"),
             onClick: (ev: ButtonEvent) => {
-                PosthogTrackers.trackInteraction("WebUserOnboardingTaskDownloadApps", ev);
                 Modal.createDialog(AppDownloadDialog, {}, "mx_AppDownloadDialog_wrapper", false, true);
             },
         },
@@ -124,7 +121,6 @@ const tasks: UserOnboardingTask[] = [
         action: {
             label: _t("onboarding|set_up_profile_action"),
             onClick: (ev: ButtonEvent) => {
-                PosthogTrackers.trackInteraction("WebUserOnboardingTaskSetupProfile", ev);
                 defaultDispatcher.dispatch({
                     action: Action.ViewUserSettings,
                     initialTabId: UserTab.General,
@@ -140,7 +136,6 @@ const tasks: UserOnboardingTask[] = [
         action: {
             label: _t("onboarding|enable_notifications_action"),
             onClick: (ev: ButtonEvent) => {
-                PosthogTrackers.trackInteraction("WebUserOnboardingTaskEnableNotifications", ev);
                 Notifier.setEnabled(true);
             },
             hideOnComplete: true,

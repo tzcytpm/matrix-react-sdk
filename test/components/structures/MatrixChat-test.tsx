@@ -52,7 +52,6 @@ import * as voiceBroadcastUtils from "../../../src/voice-broadcast/utils/cleanUp
 import LegacyCallHandler from "../../../src/LegacyCallHandler";
 import { CallStore } from "../../../src/stores/CallStore";
 import { Call } from "../../../src/models/Call";
-import { PosthogAnalytics } from "../../../src/PosthogAnalytics";
 import PlatformPeg from "../../../src/PlatformPeg";
 import EventIndexPeg from "../../../src/indexing/EventIndexPeg";
 import * as Lifecycle from "../../../src/Lifecycle";
@@ -758,7 +757,6 @@ describe("<MatrixChat />", () => {
                         .mockClear()
                         .mockImplementation(() => {});
                     jest.spyOn(voiceBroadcastUtils, "cleanUpBroadcasts").mockImplementation(async () => {});
-                    jest.spyOn(PosthogAnalytics.instance, "logout").mockImplementation(() => {});
                     jest.spyOn(EventIndexPeg, "deleteEventIndex").mockImplementation(async () => {});
 
                     jest.spyOn(CallStore.instance, "activeCalls", "get").mockReturnValue(new Set([call1, call2]));
@@ -800,12 +798,6 @@ describe("<MatrixChat />", () => {
                     expect(call2.disconnect).toHaveBeenCalled();
                 });
 
-                it("should logout of posthog", async () => {
-                    await getComponentAndWaitForReady();
-                    await dispatchLogoutAndWait();
-
-                    expect(PosthogAnalytics.instance.logout).toHaveBeenCalled();
-                });
 
                 it("should destroy pickle key", async () => {
                     await getComponentAndWaitForReady();

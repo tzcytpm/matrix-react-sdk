@@ -23,7 +23,6 @@ import { SlashCommand as SlashCommandEvent } from "@matrix-org/analytics-events/
 import { TimelineRenderingType } from "../contexts/RoomContext";
 import { reject } from "./utils";
 import { _t, TranslationKey, UserFriendlyError } from "../languageHandler";
-import { PosthogAnalytics } from "../PosthogAnalytics";
 import { CommandCategories, RunResult } from "./interface";
 
 type RunFn = (
@@ -94,13 +93,6 @@ export class Command {
                     cause: undefined,
                 }),
             );
-        }
-
-        if (this.analyticsName) {
-            PosthogAnalytics.instance.trackEvent<SlashCommandEvent>({
-                eventName: "SlashCommand",
-                command: this.analyticsName,
-            });
         }
 
         return this.runFn(matrixClient, roomId, threadId, args);

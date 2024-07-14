@@ -41,7 +41,6 @@ import AccessibleTooltipButton from "../elements/AccessibleTooltipButton";
 import { EchoChamber } from "../../../stores/local-echo/EchoChamber";
 import { CachedRoomKey, RoomEchoChamber } from "../../../stores/local-echo/RoomEchoChamber";
 import { PROPERTY_UPDATED } from "../../../stores/local-echo/GenericEchoChamber";
-import PosthogTrackers from "../../../PosthogTrackers";
 import { ViewRoomPayload } from "../../../dispatcher/payloads/ViewRoomPayload";
 import { KeyBindingAction } from "../../../accessibility/KeyboardShortcuts";
 import { getKeyBindingsManager } from "../../../KeyBindingsManager";
@@ -259,7 +258,6 @@ export class RoomTile extends React.PureComponent<ClassProps, State> {
         const target = ev.target as HTMLButtonElement;
         this.setState({ notificationsMenuPosition: target.getBoundingClientRect() });
 
-        PosthogTrackers.trackInteraction("WebRoomListRoomTileNotificationsMenu", ev);
     };
 
     private onCloseNotificationsMenu = (): void => {
@@ -351,24 +349,6 @@ export class RoomTile extends React.PureComponent<ClassProps, State> {
                         {...contextMenuBelow(this.state.generalMenuPosition)}
                         onFinished={this.onCloseGeneralMenu}
                         room={this.props.room}
-                        onPostFavoriteClick={(ev: ButtonEvent) =>
-                            PosthogTrackers.trackInteraction("WebRoomListRoomTileContextMenuFavouriteToggle", ev)
-                        }
-                        onPostInviteClick={(ev: ButtonEvent) =>
-                            PosthogTrackers.trackInteraction("WebRoomListRoomTileContextMenuInviteItem", ev)
-                        }
-                        onPostSettingsClick={(ev: ButtonEvent) =>
-                            PosthogTrackers.trackInteraction("WebRoomListRoomTileContextMenuSettingsItem", ev)
-                        }
-                        onPostLeaveClick={(ev: ButtonEvent) =>
-                            PosthogTrackers.trackInteraction("WebRoomListRoomTileContextMenuLeaveItem", ev)
-                        }
-                        onPostMarkAsReadClick={(ev: ButtonEvent) =>
-                            PosthogTrackers.trackInteraction("WebRoomListRoomTileContextMenuMarkRead", ev)
-                        }
-                        onPostMarkAsUnreadClick={(ev: ButtonEvent) =>
-                            PosthogTrackers.trackInteraction("WebRoomListRoomTileContextMenuMarkUnread", ev)
-                        }
                     />
                 )}
             </React.Fragment>

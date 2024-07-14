@@ -24,7 +24,6 @@ import { Action } from "../../src/dispatcher/actions";
 import { getMockClientWithEventEmitter, untilDispatch, untilEmission } from "../test-utils";
 import SettingsStore from "../../src/settings/SettingsStore";
 import { SlidingSyncManager } from "../../src/SlidingSyncManager";
-import { PosthogAnalytics } from "../../src/PosthogAnalytics";
 import { TimelineRenderingType } from "../../src/contexts/RoomContext";
 import { MatrixDispatcher } from "../../src/dispatcher/dispatcher";
 import { UPDATE_EVENT } from "../../src/stores/AsyncStore";
@@ -49,8 +48,6 @@ import { ModuleRunner } from "../../src/modules/ModuleRunner";
 jest.mock("../../src/Modal");
 
 // mock out the injected classes
-jest.mock("../../src/PosthogAnalytics");
-const MockPosthogAnalytics = <jest.Mock<PosthogAnalytics>>(<unknown>PosthogAnalytics);
 jest.mock("../../src/SlidingSyncManager");
 const MockSlidingSyncManager = <jest.Mock<SlidingSyncManager>>(<unknown>SlidingSyncManager);
 jest.mock("../../src/stores/spaces/SpaceStore");
@@ -166,7 +163,6 @@ describe("RoomViewStore", function () {
         stores = new TestSdkContext();
         stores.client = mockClient;
         stores._SlidingSyncManager = slidingSyncManager;
-        stores._PosthogAnalytics = new MockPosthogAnalytics();
         stores._SpaceStore = new MockSpaceStore();
         stores._VoiceBroadcastPlaybacksStore = new VoiceBroadcastPlaybacksStore(stores.voiceBroadcastRecordingsStore);
         roomViewStore = new RoomViewStore(dis, stores);

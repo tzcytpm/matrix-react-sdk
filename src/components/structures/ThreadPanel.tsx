@@ -32,7 +32,6 @@ import TimelinePanel from "./TimelinePanel";
 import { Layout } from "../../settings/enums/Layout";
 import { RoomPermalinkCreator } from "../../utils/permalinks/Permalinks";
 import Measured from "../views/elements/Measured";
-import PosthogTrackers from "../../PosthogTrackers";
 import { ButtonEvent } from "../views/elements/AccessibleButton";
 import Spinner from "../views/elements/Spinner";
 import Heading from "../views/typography/Heading";
@@ -154,7 +153,6 @@ export const ThreadPanelHeader: React.FC<{
                         isExpanded={menuDisplayed}
                         onClick={(ev: ButtonEvent) => {
                             openMenu();
-                            PosthogTrackers.trackInteraction("WebRightPanelThreadPanelFilterDropdown", ev);
                         }}
                     >
                         {`${_t("threads|show_thread_filter")} ${value?.label}`}

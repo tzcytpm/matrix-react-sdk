@@ -32,7 +32,6 @@ import AccessibleButton from "./AccessibleButton";
 import { _t } from "../../../languageHandler";
 import AccessibleTooltipButton from "./AccessibleTooltipButton";
 import { mediaFromMxc } from "../../../customisations/Media";
-import { PosthogAnalytics } from "../../../PosthogAnalytics";
 
 interface ISSOButtonProps extends IProps {
     idp?: IIdentityProvider;
@@ -100,8 +99,6 @@ const SSOButton: React.FC<ISSOButtonProps> = ({
     }
 
     const onClick = (): void => {
-        const authenticationType = getAuthenticationType(idp?.brand ?? "");
-        PosthogAnalytics.instance.setAuthenticationType(authenticationType);
         PlatformPeg.get()?.startSingleSignOn(matrixClient, loginType, fragmentAfterLogin, idp?.id, action);
     };
 

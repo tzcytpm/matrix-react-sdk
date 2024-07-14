@@ -31,7 +31,6 @@ import { RightPanelPhases } from "../../../../stores/right-panel/RightPanelStore
 import { useUnreadThreadRooms } from "./useUnreadThreadRooms";
 import { StatelessNotificationBadge } from "../../rooms/NotificationBadge/StatelessNotificationBadge";
 import { NotificationLevel } from "../../../../stores/notifications/NotificationLevel";
-import PosthogTrackers from "../../../../PosthogTrackers";
 import { getKeyBindingsManager } from "../../../../KeyBindingsManager";
 import { KeyBindingAction } from "../../../../accessibility/KeyboardShortcuts";
 
@@ -70,8 +69,6 @@ export function ThreadsActivityCentre({ displayButtonLabel }: ThreadsActivityCen
                 open={open}
                 onOpenChange={(newOpen) => {
                     // Track only when the Threads Activity Centre is opened
-                    if (newOpen) PosthogTrackers.trackInteraction("WebThreadsActivityCentreButton");
-
                     setOpen(newOpen);
                 }}
                 side="right"
@@ -132,9 +129,6 @@ function ThreadsActivityCentreRow({ room, onClick, notificationLevel }: ThreadsA
                 // Set the right panel card for that room so the threads panel is open before we dispatch,
                 // so it will open once the room appears.
                 RightPanelStore.instance.setCard({ phase: RightPanelPhases.ThreadPanel }, true, room.roomId);
-
-                // Track the click on the room
-                PosthogTrackers.trackInteraction("WebThreadsActivityCentreRoomItem", event);
 
                 // Display the selected room in the timeline
                 defaultDispatcher.dispatch<ViewRoomPayload>({

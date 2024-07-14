@@ -41,7 +41,6 @@ import "what-input";
 
 import type NewRecoveryMethodDialog from "../../async-components/views/dialogs/security/NewRecoveryMethodDialog";
 import type RecoveryMethodRemovedDialog from "../../async-components/views/dialogs/security/RecoveryMethodRemovedDialog";
-import PosthogTrackers from "../../PosthogTrackers";
 import { DecryptionFailureTracker } from "../../DecryptionFailureTracker";
 import { IMatrixClientCreds, MatrixClientPeg } from "../../MatrixClientPeg";
 import PlatformPeg from "../../PlatformPeg";
@@ -108,7 +107,6 @@ import UIStore, { UI_EVENTS } from "../../stores/UIStore";
 import SoftLogout from "./auth/SoftLogout";
 import { makeRoomPermalink } from "../../utils/permalinks/Permalinks";
 import { copyPlaintext } from "../../utils/strings";
-import { PosthogAnalytics } from "../../PosthogAnalytics";
 import { initSentry } from "../../sentry";
 import LegacyCallHandler from "../../LegacyCallHandler";
 import { showSpaceInvite } from "../../utils/space";
@@ -347,6 +345,9 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
+        logger.error("getSessionLock - onSessionLockStolen");
+
+
         // If the user was soft-logged-out, we want to make the SoftLogout component responsible for doing any
         // token auth (rather than Lifecycle.attemptDelegatedAuthLogin), since SoftLogout knows about submitting the
         // device ID and preserving the session.
@@ -360,12 +361,16 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
+        logger.error("isSoftLogout - isSoftLogout");
+
         // Otherwise, the first thing to do is to try the token params in the query-string
         const delegatedAuthSucceeded = await Lifecycle.attemptDelegatedAuthLogin(
             this.props.realQueryParams,
             this.props.defaultDeviceDisplayName,
             this.getFragmentAfterLogin(),
         );
+
+        logger.error("delegatedAuthSucceeded - delegatedAuthSucceeded");
 
         // remove the loginToken or auth code from the URL regardless
         if (
@@ -375,6 +380,9 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         ) {
             this.props.onTokenLoginCompleted();
         }
+
+        logger.error("onTokenLoginCompleted - onTokenLoginCompleted");
+
 
         if (delegatedAuthSucceeded) {
             // token auth/OIDC worked! Time to fire up the client.
@@ -388,13 +396,20 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
+        logger.error("restoreFromLocalStorage - restoreFromLocalStorage");
+
         // if the user has followed a login or register link, don't reanimate
         // the old creds, but rather go straight to the relevant page
         const firstScreen = this.screenAfterLogin ? this.screenAfterLogin.screen : null;
         const restoreSuccess = await this.loadSession();
         if (restoreSuccess) {
+            logger.error("restoreSuccess - restoreSuccess");
+
             return;
         }
+
+        logger.error("loadSession - loadSession");
+
 
         // If the first screen is an auth screen, we don't want to wait for login.
         if (firstScreen !== null && AUTH_SCREENS.includes(firstScreen)) {
@@ -528,12 +543,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
     }
 
     public componentDidUpdate(prevProps: IProps, prevState: IState): void {
-        if (this.shouldTrackPageChange(prevState, this.state)) {
-            const durationMs = this.stopPageChangeTimer();
-            if (durationMs != null) {
-                PosthogTrackers.instance.trackPageChange(this.state.view, this.state.page_type, durationMs);
-            }
-        }
         if (this.focusComposer) {
             dis.fire(Action.FocusSendMessageComposer);
             this.focusComposer = false;
@@ -1393,7 +1402,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             // their initial login on another device/browser than they registered on, we want to avoid asking this
             // question twice
             //
-            // initPosthogAnalyticsToast pioneered this technique, we’re just reusing it here.
             SettingsStore.watchSetting(
                 "FTUE.useCaseSelection",
                 null,
@@ -1410,7 +1418,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
 
     private async onShowPostLoginScreen(useCase?: UseCase): Promise<void> {
         if (useCase) {
-            PosthogAnalytics.instance.setProperty("ftueUseCaseSelection", useCase);
             SettingsStore.setValue("FTUE.useCaseSelection", null, SettingLevel.ACCOUNT, useCase);
         }
 
@@ -1469,32 +1476,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         }
     }
 
-    private initPosthogAnalyticsToast(): void {
-        // Show the analytics toast if necessary
-        if (SettingsStore.getValue("pseudonymousAnalyticsOptIn") === null) {
-            showAnalyticsToast();
-        }
-
-        // Listen to changes in settings and show the toast if appropriate - this is necessary because account
-        // settings can still be changing at this point in app init (due to the initial sync being cached, then
-        // subsequent syncs being received from the server)
-        SettingsStore.watchSetting(
-            "pseudonymousAnalyticsOptIn",
-            null,
-            (originalSettingName, changedInRoomId, atLevel, newValueAtLevel, newValue) => {
-                if (newValue === null) {
-                    showAnalyticsToast();
-                } else {
-                    // It's possible for the value to change if a cached sync loads at page load, but then network
-                    // sync contains a new value of the flag with it set to false (e.g. another device set it since last
-                    // loading the page); so hide the toast.
-                    // (this flipping usually happens before first render so the user won't notice it; anyway flicker
-                    // on/off is probably better than showing the toast again when the user already dismissed it)
-                    hideAnalyticsToast();
-                }
-            },
-        );
-    }
 
     private showScreenAfterLogin(): void {
         // If screenAfterLogin is set, use that, then null it so that a second login will
@@ -1776,11 +1757,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             cli.setGlobalErrorOnUnknownDevices(false);
         }
 
-        // Cannot be done in OnLoggedIn as at that point the AccountSettingsHandler doesn't yet have a client
-        // Will be moved to a pre-login flow as well
-        if (PosthogAnalytics.instance.isEnabled() && SettingsStore.isLevelSupported(SettingLevel.ACCOUNT)) {
-            this.initPosthogAnalyticsToast();
-        }
     }
 
     public showScreen(screen: string, params?: { [key: string]: any }): void {

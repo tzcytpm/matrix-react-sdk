@@ -321,31 +321,6 @@ export class RoomViewStore extends EventEmitter {
                 if (this.state.roomId === payload.roomId) {
                     this.setState({ shouldPeek: false });
                 }
-
-                awaitRoomDownSync(MatrixClientPeg.safeGet(), payload.roomId).then((room) => {
-                    const numMembers = room.getJoinedMemberCount();
-                    const roomSize =
-                        numMembers > 1000
-                            ? "MoreThanAThousand"
-                            : numMembers > 100
-                              ? "OneHundredAndOneToAThousand"
-                              : numMembers > 10
-                                ? "ElevenToOneHundred"
-                                : numMembers > 2
-                                  ? "ThreeToTen"
-                                  : numMembers > 1
-                                    ? "Two"
-                                    : "One";
-
-                    this.stores.posthogAnalytics.trackEvent<JoinedRoomEvent>({
-                        eventName: "JoinedRoom",
-                        trigger: payload.metricsTrigger,
-                        roomSize,
-                        isDM: !!DMRoomMap.shared().getUserIdForRoomId(room.roomId),
-                        isSpace: room.isSpaceRoom(),
-                    });
-                });
-
                 break;
             }
             case "on_client_not_viable":
@@ -407,15 +382,6 @@ export class RoomViewStore extends EventEmitter {
                             ? "Public"
                             : "Private";
                 }
-
-                this.stores.posthogAnalytics.trackEvent<ViewRoomEvent>({
-                    eventName: "ViewRoom",
-                    trigger: payload.metricsTrigger,
-                    viaKeyboard: payload.metricsViaKeyboard,
-                    isDM: !!DMRoomMap.shared().getUserIdForRoomId(payload.room_id),
-                    isSpace: room?.isSpaceRoom(),
-                    activeSpace,
-                });
             }
 
             if (SettingsStore.getValue("feature_sliding_sync") && this.state.roomId !== payload.room_id) {

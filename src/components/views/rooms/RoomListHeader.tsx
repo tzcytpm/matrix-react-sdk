@@ -27,7 +27,6 @@ import { useDispatcher } from "../../../hooks/useDispatcher";
 import { useEventEmitterState, useTypedEventEmitter, useTypedEventEmitterState } from "../../../hooks/useEventEmitter";
 import { useFeatureEnabled } from "../../../hooks/useSettings";
 import { _t } from "../../../languageHandler";
-import PosthogTrackers from "../../../PosthogTrackers";
 import { UIComponent } from "../../../settings/UIFeature";
 import {
     getMetaSpaceName,
@@ -208,7 +207,6 @@ const RoomListHeader: React.FC<IProps> = ({ onVisibilityChange }) => {
                             e.preventDefault();
                             e.stopPropagation();
                             showCreateNewRoom(activeSpace);
-                            PosthogTrackers.trackInteraction("WebRoomListHeaderPlusMenuCreateRoomItem", e);
                             closePlusMenu();
                         }}
                     />
@@ -254,7 +252,6 @@ const RoomListHeader: React.FC<IProps> = ({ onVisibilityChange }) => {
                                 metricsTrigger: undefined, // other
                             });
                             closePlusMenu();
-                            PosthogTrackers.trackInteraction("WebRoomListHeaderPlusMenuExploreRoomsItem", e);
                         }}
                     />
                     <IconizedContextMenuOption
@@ -302,7 +299,6 @@ const RoomListHeader: React.FC<IProps> = ({ onVisibilityChange }) => {
                             e.preventDefault();
                             e.stopPropagation();
                             defaultDispatcher.dispatch({ action: "view_create_chat" });
-                            PosthogTrackers.trackInteraction("WebRoomListHeaderPlusMenuCreateChatItem", e);
                             closePlusMenu();
                         }}
                     />
@@ -313,7 +309,6 @@ const RoomListHeader: React.FC<IProps> = ({ onVisibilityChange }) => {
                             e.preventDefault();
                             e.stopPropagation();
                             defaultDispatcher.dispatch({ action: "view_create_room" });
-                            PosthogTrackers.trackInteraction("WebRoomListHeaderPlusMenuCreateRoomItem", e);
                             closePlusMenu();
                         }}
                     />
@@ -346,7 +341,6 @@ const RoomListHeader: React.FC<IProps> = ({ onVisibilityChange }) => {
                         e.preventDefault();
                         e.stopPropagation();
                         defaultDispatcher.dispatch({ action: Action.ViewRoomDirectory });
-                        PosthogTrackers.trackInteraction("WebRoomListHeaderPlusMenuExploreRoomsItem", e);
                         closePlusMenu();
                     }}
                 />

@@ -64,7 +64,6 @@ import RoomName from "../elements/RoomName";
 import UIStore from "../../../stores/UIStore";
 import ExportDialog from "../dialogs/ExportDialog";
 import RightPanelStore from "../../../stores/right-panel/RightPanelStore";
-import PosthogTrackers from "../../../PosthogTrackers";
 import { shouldShowComponent } from "../../../customisations/helpers/UIComponents";
 import { PollHistoryDialog } from "../dialogs/PollHistoryDialog";
 import { Flex } from "../../utils/Flex";
@@ -270,7 +269,6 @@ const onRoomPinsClick = (): void => {
 
 const onRoomSettingsClick = (ev: Event): void => {
     defaultDispatcher.dispatch({ action: "open_room_settings" });
-    PosthogTrackers.trackInteraction("WebRightPanelRoomInfoSettingsButton", ev);
 };
 
 const RoomSummaryCard: React.FC<IProps> = ({ room, permalinkCreator, onClose, onSearchClick }) => {
@@ -305,7 +303,6 @@ const RoomSummaryCard: React.FC<IProps> = ({ room, permalinkCreator, onClose, on
 
     const onRoomMembersClick = (ev: Event): void => {
         RightPanelStore.instance.pushCard({ phase: RightPanelPhases.RoomMemberList }, true);
-        PosthogTrackers.trackInteraction("WebRightPanelRoomInfoPeopleButton", ev);
     };
 
     const isRoomEncrypted = useIsEncrypted(cli, room);

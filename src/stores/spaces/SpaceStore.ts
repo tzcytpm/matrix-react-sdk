@@ -64,7 +64,6 @@ import {
     SpaceDescendantMap,
     flattenSpaceHierarchy,
 } from "./flattenSpaceHierarchy";
-import { PosthogAnalytics } from "../../PosthogAnalytics";
 import { ViewRoomPayload } from "../../dispatcher/payloads/ViewRoomPayload";
 import { ViewHomePagePayload } from "../../dispatcher/payloads/ViewHomePagePayload";
 import { SwitchSpacePayload } from "../../dispatcher/payloads/SwitchSpacePayload";
@@ -616,7 +615,6 @@ export class SpaceStoreClass extends AsyncStoreWithClient<IState> {
             });
         });
 
-        PosthogAnalytics.instance.setProperty("numSpaces", joinedSpaces.length);
     };
 
     private rebuildHomeSpace = (): void => {
@@ -1199,12 +1197,6 @@ export class SpaceStoreClass extends AsyncStoreWithClient<IState> {
     }
 
     private sendUserProperties(): void {
-        const enabled = new Set(this.enabledMetaSpaces);
-        PosthogAnalytics.instance.setProperty("WebMetaSpaceHomeEnabled", enabled.has(MetaSpace.Home));
-        PosthogAnalytics.instance.setProperty("WebMetaSpaceHomeAllRooms", this.allRoomsInHome);
-        PosthogAnalytics.instance.setProperty("WebMetaSpacePeopleEnabled", enabled.has(MetaSpace.People));
-        PosthogAnalytics.instance.setProperty("WebMetaSpaceFavouritesEnabled", enabled.has(MetaSpace.Favourites));
-        PosthogAnalytics.instance.setProperty("WebMetaSpaceOrphansEnabled", enabled.has(MetaSpace.Orphans));
     }
 
     private goToFirstSpace(contextSwitch = false): void {

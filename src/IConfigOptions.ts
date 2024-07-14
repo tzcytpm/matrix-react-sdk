@@ -143,10 +143,6 @@ export interface IConfigOptions {
         servers: string[];
     };
 
-    posthog?: {
-        project_api_key: string;
-        api_host: string; // hostname
-    };
     analytics_owner?: string; // defaults to `brand`
     privacy_policy_url?: string; // location for cookie policy
 

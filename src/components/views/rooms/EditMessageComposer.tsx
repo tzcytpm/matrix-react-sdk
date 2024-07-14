@@ -44,7 +44,6 @@ import RoomContext from "../../../contexts/RoomContext";
 import { ComposerType } from "../../../dispatcher/payloads/ComposerInsertPayload";
 import { getSlashCommand, isSlashCommand, runSlashCommand, shouldSendAnyway } from "../../../editor/commands";
 import { KeyBindingAction } from "../../../accessibility/KeyboardShortcuts";
-import { PosthogAnalytics } from "../../../PosthogAnalytics";
 import { editorRoomKey, editorStateKey } from "../../../Editing";
 import DocumentOffset from "../../../editor/offset";
 import { attachMentions, attachRelation } from "./SendMessageComposer";
@@ -309,14 +308,6 @@ class EditMessageComposer extends React.Component<IEditMessageComposerProps, ISt
         if (this.state.saveDisabled) return;
 
         const editedEvent = this.props.editState.getEvent();
-
-        PosthogAnalytics.instance.trackEvent<ComposerEvent>({
-            eventName: "Composer",
-            isEditing: true,
-            messageType: "Text",
-            inThread: !!editedEvent?.getThread(),
-            isReply: !!editedEvent.replyEventId,
-        });
 
         // Replace emoticon at the end of the message
         if (SettingsStore.getValue("MessageComposerInput.autoReplaceEmoji") && this.editorRef.current) {

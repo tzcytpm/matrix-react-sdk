@@ -51,7 +51,6 @@ import RoomAvatar from "../avatars/RoomAvatar";
 import { formatCount } from "../../../utils/FormattingUtils";
 import RightPanelStore from "../../../stores/right-panel/RightPanelStore";
 import { Linkify, topicToHtml } from "../../../HtmlUtils";
-import PosthogTrackers from "../../../PosthogTrackers";
 import { VideoRoomChatButton } from "./RoomHeader/VideoRoomChatButton";
 import { RoomKnocksBar } from "./RoomKnocksBar";
 import { isVideoRoom } from "../../../utils/video-rooms";
@@ -353,7 +352,6 @@ export default function RoomHeader({
                             onClick={(evt) => {
                                 evt.stopPropagation();
                                 RightPanelStore.instance.showOrHidePanel(RightPanelPhases.ThreadPanel);
-                                PosthogTrackers.trackInteraction("WebRoomHeaderButtonsThreadsButton", evt);
                             }}
                             aria-label={_t("common|threads")}
                         >

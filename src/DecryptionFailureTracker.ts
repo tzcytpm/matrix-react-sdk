@@ -18,8 +18,6 @@ import { DecryptionError } from "matrix-js-sdk/src/crypto/algorithms";
 import { MatrixEvent } from "matrix-js-sdk/src/matrix";
 import { Error as ErrorEvent } from "@matrix-org/analytics-events/types/typescript/Error";
 
-import { PosthogAnalytics } from "./PosthogAnalytics";
-
 export class DecryptionFailure {
     public readonly ts: number;
 
@@ -40,14 +38,6 @@ export type ErrCodeMapFn = (errcode: string) => ErrorCode;
 export class DecryptionFailureTracker {
     private static internalInstance = new DecryptionFailureTracker(
         (total, errorCode, rawError) => {
-            for (let i = 0; i < total; i++) {
-                PosthogAnalytics.instance.trackEvent<ErrorEvent>({
-                    eventName: "Error",
-                    domain: "E2EE",
-                    name: errorCode,
-                    context: `mxc_crypto_error_type_${rawError}`,
-                });
-            }
         },
         (errorCode) => {
             // Map JS-SDK error codes to tracker codes for aggregation

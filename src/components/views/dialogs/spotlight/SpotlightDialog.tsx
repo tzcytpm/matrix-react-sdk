@@ -51,7 +51,6 @@ import { useUserDirectory } from "../../../../hooks/useUserDirectory";
 import { getKeyBindingsManager } from "../../../../KeyBindingsManager";
 import { _t } from "../../../../languageHandler";
 import { MatrixClientPeg } from "../../../../MatrixClientPeg";
-import { PosthogAnalytics } from "../../../../PosthogAnalytics";
 import { getCachedRoomIDForAlias } from "../../../../RoomAliasCache";
 import { showStartChatInviteDialog } from "../../../../RoomInvite";
 import { SettingLevel } from "../../../../settings/SettingLevel";
@@ -225,12 +224,6 @@ export const useWebSearchMetrics = (numResults: number, queryLength: number, via
 
         // send metrics after a 1s debounce
         const timeoutId = window.setTimeout(() => {
-            PosthogAnalytics.instance.trackEvent<WebSearchEvent>({
-                eventName: "WebSearch",
-                viaSpotlight,
-                numResults,
-                queryLength,
-            });
         }, 1000);
 
         return () => {

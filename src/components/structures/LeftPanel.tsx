@@ -42,7 +42,6 @@ import { KeyBindingAction } from "../../accessibility/KeyboardShortcuts";
 import { shouldShowComponent } from "../../customisations/helpers/UIComponents";
 import { UIComponent } from "../../settings/UIFeature";
 import { ButtonEvent } from "../views/elements/AccessibleButton";
-import PosthogTrackers from "../../PosthogTrackers";
 import PageType from "../../PageTypes";
 import { UserOnboardingButton } from "../views/user-onboarding/UserOnboardingButton";
 
@@ -120,7 +119,6 @@ export default class LeftPanel extends React.Component<IProps, IState> {
 
     private onExplore = (ev: ButtonEvent): void => {
         dis.fire(Action.ViewRoomDirectory);
-        PosthogTrackers.trackInteraction("WebLeftPanelExploreRoomsButton", ev);
     };
 
     private refreshStickyHeaders = (): void => {

@@ -34,7 +34,6 @@ import { logger } from "matrix-js-sdk/src/logger";
 import { PermissionChanged as PermissionChangedEvent } from "@matrix-org/analytics-events/types/typescript/PermissionChanged";
 
 import { MatrixClientPeg } from "./MatrixClientPeg";
-import { PosthogAnalytics } from "./PosthogAnalytics";
 import SdkConfig from "./SdkConfig";
 import PlatformPeg from "./PlatformPeg";
 import * as TextForEvent from "./TextForEvent";
@@ -311,22 +310,12 @@ class NotifierClass {
 
                 if (callback) callback();
 
-                PosthogAnalytics.instance.trackEvent<PermissionChangedEvent>({
-                    eventName: "PermissionChanged",
-                    permission: "Notification",
-                    granted: true,
-                });
                 dis.dispatch({
                     action: "notifier_enabled",
                     value: true,
                 });
             });
         } else {
-            PosthogAnalytics.instance.trackEvent<PermissionChangedEvent>({
-                eventName: "PermissionChanged",
-                permission: "Notification",
-                granted: false,
-            });
             dis.dispatch({
                 action: "notifier_enabled",
                 value: false,
