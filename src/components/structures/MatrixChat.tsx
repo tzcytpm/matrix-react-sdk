@@ -347,9 +347,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
-        logger.error("getSessionLock - onSessionLockStolen");
-
-
         // If the user was soft-logged-out, we want to make the SoftLogout component responsible for doing any
         // token auth (rather than Lifecycle.attemptDelegatedAuthLogin), since SoftLogout knows about submitting the
         // device ID and preserving the session.
@@ -363,16 +360,12 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
-        logger.error("isSoftLogout - isSoftLogout");
-
         // Otherwise, the first thing to do is to try the token params in the query-string
         const delegatedAuthSucceeded = await Lifecycle.attemptDelegatedAuthLogin(
             this.props.realQueryParams,
             this.props.defaultDeviceDisplayName,
             this.getFragmentAfterLogin(),
         );
-
-        logger.error("delegatedAuthSucceeded - delegatedAuthSucceeded");
 
         // remove the loginToken or auth code from the URL regardless
         if (
@@ -382,9 +375,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         ) {
             this.props.onTokenLoginCompleted();
         }
-
-        logger.error("onTokenLoginCompleted - onTokenLoginCompleted");
-
 
         if (delegatedAuthSucceeded) {
             // token auth/OIDC worked! Time to fire up the client.
@@ -398,20 +388,13 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
-        logger.error("restoreFromLocalStorage - restoreFromLocalStorage");
-
         // if the user has followed a login or register link, don't reanimate
         // the old creds, but rather go straight to the relevant page
         const firstScreen = this.screenAfterLogin ? this.screenAfterLogin.screen : null;
         const restoreSuccess = await this.loadSession();
         if (restoreSuccess) {
-            logger.error("restoreSuccess - restoreSuccess");
-
             return;
         }
-
-        logger.error("loadSession - loadSession");
-
 
         // If the first screen is an auth screen, we don't want to wait for login.
         if (firstScreen !== null && AUTH_SCREENS.includes(firstScreen)) {
