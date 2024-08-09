@@ -347,9 +347,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
-        logger.error("getSessionLock - onSessionLockStolen");
-
-
         // If the user was soft-logged-out, we want to make the SoftLogout component responsible for doing any
         // token auth (rather than Lifecycle.attemptDelegatedAuthLogin), since SoftLogout knows about submitting the
         // device ID and preserving the session.
@@ -363,16 +360,12 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
-        logger.error("isSoftLogout - isSoftLogout");
-
         // Otherwise, the first thing to do is to try the token params in the query-string
         const delegatedAuthSucceeded = await Lifecycle.attemptDelegatedAuthLogin(
             this.props.realQueryParams,
             this.props.defaultDeviceDisplayName,
             this.getFragmentAfterLogin(),
         );
-
-        logger.error("delegatedAuthSucceeded - delegatedAuthSucceeded");
 
         // remove the loginToken or auth code from the URL regardless
         if (
@@ -382,9 +375,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         ) {
             this.props.onTokenLoginCompleted();
         }
-
-        logger.error("onTokenLoginCompleted - onTokenLoginCompleted");
-
 
         if (delegatedAuthSucceeded) {
             // token auth/OIDC worked! Time to fire up the client.
@@ -398,7 +388,8 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
-        logger.error("restoreFromLocalStorage - restoreFromLocalStorage");
+
+
 
         // if the user has followed a login or register link, don't reanimate
         // the old creds, but rather go straight to the relevant page
@@ -433,30 +424,8 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
 
     private async postLoginSetup(): Promise<void> {
         const cli = MatrixClientPeg.safeGet();
-        const cryptoEnabled = cli.isCryptoEnabled();
-
-        // @Thz 05 July 2024: TODO: Worked but we need make sure it show only first login, 
-        // and if Security Key/Phrase was setup, then it will not show again.
-        const crypto = cli.getCrypto();
-        if (!crypto) return;
-        
-        const crossSigningReady =  await crypto.isCrossSigningReady();
-        const secretStorageReady = await crypto.isSecretStorageReady();
-        const allSystemsReady = crossSigningReady && secretStorageReady;
-        if (!allSystemsReady) {
-            this.setStateForNewView({ view: Views.USE_CASE_SELECTION });
-            SettingsStore.watchSetting(
-                "FTUE.useCaseSelection",
-                null,
-                (originalSettingName, changedInRoomId, atLevel, newValueAtLevel, newValue) => {
-                    if (newValue !== null && this.state.view === Views.USE_CASE_SELECTION) {
-                        this.onShowPostLoginScreen();
-                    }
-                },
-            );
-            return;
-        }
-
+	// @Thz 05 July 2024: START --- show Generate Key/Passphrase on SignIn flow
+        const cryptoEnabled = true; // cli.isCryptoEnabled();
         if (!cryptoEnabled) {
             this.onLoggedIn();
         }
@@ -500,29 +469,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             // if cross-signing is not yet set up, do so now if possible.
             this.setStateForNewView({ view: Views.E2E_SETUP });
         } else {
-            // @Thz 05 July 2024: START --- show Generate Key/Passphrase on SignIn flow
-            const cli = MatrixClientPeg.safeGet();
-            const crypto = cli.getCrypto();
-            if (!crypto) return;
-            
-            const crossSigningReady =  await crypto.isCrossSigningReady();
-            const secretStorageReady = await crypto.isSecretStorageReady();
-            const allSystemsReady = crossSigningReady && secretStorageReady;
-            if (!allSystemsReady) {}
-                this.setStateForNewView({ view: Views.USE_CASE_SELECTION });
-                SettingsStore.watchSetting(
-                    "FTUE.useCaseSelection",
-                    null,
-                    (originalSettingName, changedInRoomId, atLevel, newValueAtLevel, newValue) => {
-                        if (newValue !== null && this.state.view === Views.USE_CASE_SELECTION) {
-                            this.onShowPostLoginScreen();
-                        }
-                    },
-                );
-            // }
-            return;
-            // @Thz 05 July 2024: END ---
-
             this.onLoggedIn();
         }
         this.setState({ pendingInitialSync: false });
@@ -1390,16 +1336,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         this.themeWatcher.recheck();
         StorageManager.tryPersistStorage();
 
-	// @Thz 29 June 2024: show Generate Key/Passphrase on SignIn flow
-        const cli = MatrixClientPeg.safeGet();
-        const crypto = cli.getCrypto();
-        if (!crypto) return;
-
-        const crossSigningReady =  await crypto.isCrossSigningReady();
-        const secretStorageReady = await crypto.isSecretStorageReady();
-        const allSystemsReady = crossSigningReady && secretStorageReady;
-
-        if (!allSystemsReady && MatrixClientPeg.currentUserIsJustRegistered() && SettingsStore.getValue("FTUE.useCaseSelection") === null) {
+        if (MatrixClientPeg.currentUserIsJustRegistered() && SettingsStore.getValue("FTUE.useCaseSelection") === null) {
             this.setStateForNewView({ view: Views.USE_CASE_SELECTION });
 
             // Listen to changes in settings and hide the use case screen if appropriate - this is necessary because
