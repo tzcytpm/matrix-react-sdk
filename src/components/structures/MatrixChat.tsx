@@ -396,13 +396,8 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         const firstScreen = this.screenAfterLogin ? this.screenAfterLogin.screen : null;
         const restoreSuccess = await this.loadSession();
         if (restoreSuccess) {
-            logger.error("restoreSuccess - restoreSuccess");
-
             return;
         }
-
-        logger.error("loadSession - loadSession");
-
 
         // If the first screen is an auth screen, we don't want to wait for login.
         if (firstScreen !== null && AUTH_SCREENS.includes(firstScreen)) {
