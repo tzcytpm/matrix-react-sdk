@@ -388,9 +388,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
-
-
-
         // if the user has followed a login or register link, don't reanimate
         // the old creds, but rather go straight to the relevant page
         const firstScreen = this.screenAfterLogin ? this.screenAfterLogin.screen : null;
@@ -1477,7 +1474,8 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
      * Called when the session is logged out
      */
     private onLoggedOut(): void {
-        this.viewLogin({
+        // @Thz 15 Aug 2024: redirect to Login_Sso after logout 
+        this.viewLoginPrivateLineSSO({
             ready: false,
             collapseLhs: false,
             currentRoomId: null,
