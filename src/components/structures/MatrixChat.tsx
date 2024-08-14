@@ -419,8 +419,10 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
 
     private async postLoginSetup(): Promise<void> {
         const cli = MatrixClientPeg.safeGet();
-	// @Thz 05 July 2024: START --- show Generate Key/Passphrase on SignIn flow
-        const cryptoEnabled = true; // cli.isCryptoEnabled();
+        const cryptoEnabled = cli.isCryptoEnabled();
+
+	// @Thz 05 July 2024: START --- show Generate Key/Passphrase on SignIn flow --> not need because enforce from Server Config
+        // const cryptoEnabled = true; // cli.isCryptoEnabled();
         if (!cryptoEnabled) {
             this.onLoggedIn();
         }
