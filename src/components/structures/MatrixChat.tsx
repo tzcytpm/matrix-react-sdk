@@ -806,6 +806,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             }
             case "view_welcome_page":
                 // this.viewWelcome();
+		// @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
                 this.viewLoginPrivateLineSSO();
 
                 break;
@@ -1330,7 +1331,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         this.themeWatcher.recheck();
         StorageManager.tryPersistStorage();
 
-        if (MatrixClientPeg.currentUserIsJustRegistered() && SettingsStore.getValue("FTUE.useCaseSelection") === null) {
+        if ((MatrixClientPeg.currentUserIsJustRegistered() && SettingsStore.getValue("FTUE.useCaseSelection") === null) || !SettingsStore.getValue("E2EE.isSetupSecurityKey")) {
             this.setStateForNewView({ view: Views.USE_CASE_SELECTION });
 
             // Listen to changes in settings and hide the use case screen if appropriate - this is necessary because
