@@ -386,21 +386,13 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             return;
         }
 
-
-
-
         // if the user has followed a login or register link, don't reanimate
         // the old creds, but rather go straight to the relevant page
         const firstScreen = this.screenAfterLogin ? this.screenAfterLogin.screen : null;
         const restoreSuccess = await this.loadSession();
         if (restoreSuccess) {
-            logger.error("restoreSuccess - restoreSuccess");
-
             return;
         }
-
-        logger.error("loadSession - loadSession");
-
 
         // If the first screen is an auth screen, we don't want to wait for login.
         if (firstScreen !== null && AUTH_SCREENS.includes(firstScreen)) {
@@ -422,8 +414,10 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
 
     private async postLoginSetup(): Promise<void> {
         const cli = MatrixClientPeg.safeGet();
-	// @Thz 05 July 2024: START --- show Generate Key/Passphrase on SignIn flow
-        const cryptoEnabled = true; // cli.isCryptoEnabled();
+        const cryptoEnabled = cli.isCryptoEnabled();
+
+	// @Thz 05 July 2024: START --- show Generate Key/Passphrase on SignIn flow --> not need because enforce from Server Config
+        // const cryptoEnabled = true; // cli.isCryptoEnabled();
         if (!cryptoEnabled) {
             this.onLoggedIn();
         }
@@ -804,6 +798,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             }
             case "view_welcome_page":
                 // this.viewWelcome();
+		// @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
                 this.viewLoginPrivateLineSSO();
 
                 break;
@@ -1328,7 +1323,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
         this.themeWatcher.recheck();
         StorageManager.tryPersistStorage();
 
-        if (MatrixClientPeg.currentUserIsJustRegistered() && SettingsStore.getValue("FTUE.useCaseSelection") === null) {
+        if ((MatrixClientPeg.currentUserIsJustRegistered() && SettingsStore.getValue("FTUE.useCaseSelection") === null) || !SettingsStore.getValue("E2EE.isSetupSecurityKey")) {
             this.setStateForNewView({ view: Views.USE_CASE_SELECTION });
 
             // Listen to changes in settings and hide the use case screen if appropriate - this is necessary because
@@ -1444,7 +1439,8 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
      * Called when the session is logged out
      */
     private onLoggedOut(): void {
-        this.viewLogin({
+        // @Thz 15 Aug 2024: redirect to Login_Sso after logout 
+        this.viewLoginPrivateLineSSO({
             ready: false,
             collapseLhs: false,
             currentRoomId: null,

@@ -49,6 +49,12 @@ import { IValidationResult } from "../../../../components/views/elements/Validat
 import { Icon as CheckmarkIcon } from "../../../../../res/img/element-icons/check.svg";
 import PassphraseConfirmField from "../../../../components/views/auth/PassphraseConfirmField";
 
+//@Thz 16 Aug 2024: Setting E2EE.isSetupSecurityKey for Show Security Key/Passphrase on Signup SSO
+import SettingsStore from "../../../../settings/SettingsStore";
+import { SettingLevel } from "../../../../settings/SettingLevel";
+
+
+
 // I made a mistake while converting this and it has to be fixed!
 enum Phase {
     Loading = "loading",
@@ -496,6 +502,10 @@ export default class CreateSecretStorageDialog extends React.PureComponent<IProp
             setPassphrase: true,
             phase: Phase.ShowKey,
         });
+
+        //@Thz 16 Aug 2024: Setting E2EE.isSetupSecurityKey for Show Security Key/Passphrase on Signup SSO
+        SettingsStore.setValue("E2EE.isSetupSecurityKey", null, SettingLevel.ACCOUNT, "true");
+
     };
 
     private onSetAgainClick = (): void => {

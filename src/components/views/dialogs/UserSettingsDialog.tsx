@@ -81,6 +81,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("common|general"),
                 "mx_UserSettingsDialog_settingsIcon",
                 <GeneralUserSettingsTab closeSettingsFn={this.props.onFinished} />,
+                "UserSettingsGeneral",
             ),
         );
         tabs.push(
@@ -89,6 +90,8 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("settings|sessions|title"),
                 "mx_UserSettingsDialog_sessionsIcon",
                 <SessionManagerTab />,
+                // don't track with posthog while under construction
+                undefined,
             ),
         );
         tabs.push(
@@ -97,6 +100,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("common|appearance"),
                 "mx_UserSettingsDialog_appearanceIcon",
                 <AppearanceUserSettingsTab />,
+                "UserSettingsAppearance",
             ),
         );
         tabs.push(
@@ -105,6 +109,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("notifications|enable_prompt_toast_title"),
                 "mx_UserSettingsDialog_bellIcon",
                 <NotificationUserSettingsTab />,
+                "UserSettingsNotifications",
             ),
         );
         tabs.push(
@@ -113,6 +118,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("common|preferences"),
                 "mx_UserSettingsDialog_preferencesIcon",
                 <PreferencesUserSettingsTab closeSettingsFn={this.props.onFinished} />,
+                "UserSettingsPreferences",
             ),
         );
         tabs.push(
@@ -121,6 +127,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("settings|keyboard|title"),
                 "mx_UserSettingsDialog_keyboardIcon",
                 <KeyboardUserSettingsTab />,
+                "UserSettingsKeyboard",
             ),
         );
         tabs.push(
@@ -129,6 +136,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("settings|sidebar|title"),
                 "mx_UserSettingsDialog_sidebarIcon",
                 <SidebarUserSettingsTab />,
+                "UserSettingsSidebar",
             ),
         );
 
@@ -139,6 +147,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                     _td("settings|voip|title"),
                     "mx_UserSettingsDialog_voiceIcon",
                     <VoiceUserSettingsTab />,
+                    "UserSettingsVoiceVideo",
                 ),
             );
         }
@@ -149,6 +158,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("room_settings|security|title"),
                 "mx_UserSettingsDialog_securityIcon",
                 <SecurityUserSettingsTab closeSettingsFn={this.props.onFinished} />,
+                "UserSettingsSecurityPrivacy",
             ),
         );
         // Show the Labs tab if enabled or if there are any active betas
@@ -159,6 +169,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                     _td("common|labs"),
                     "mx_UserSettingsDialog_labsIcon",
                     <LabsUserSettingsTab />,
+                    "UserSettingsLabs",
                 ),
             );
         }
@@ -169,6 +180,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                     _td("labs_mjolnir|title"),
                     "mx_UserSettingsDialog_mjolnirIcon",
                     <MjolnirUserSettingsTab />,
+                    "UserSettingMjolnir",
                 ),
             );
         }
@@ -178,6 +190,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                 _td("setting|help_about|title"),
                 "mx_UserSettingsDialog_helpIcon",
                 <HelpUserSettingsTab />,
+                "UserSettingsHelpAbout",
             ),
         );
 
@@ -200,6 +213,7 @@ export default class UserSettingsDialog extends React.Component<IProps, IState> 
                         <TabbedView
                             tabs={this.getTabs()}
                             initialTabId={this.props.initialTabId}
+                            screenName="UserSettings"
                         />
                     </div>
                 </BaseDialog>
