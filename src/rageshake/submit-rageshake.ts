@@ -102,7 +102,7 @@ async function collectBaseInformation(body: FormData, opts: IOpts): Promise<void
     const touchInput = matchesMediaQuery("(pointer: coarse)");
 
     body.append("text", opts.userText || "User did not supply any additional text.");
-    body.append("app", opts.customApp || "element-web");
+    body.append("app", opts.customApp || "privateLINE Comms Desktop/Web");
     body.append("version", version ?? "UNKNOWN");
     body.append("user_agent", userAgent);
     body.append("installed_pwa", installedPWA);
@@ -417,7 +417,7 @@ export async function submitFeedback(
     body.append("text", comment);
     body.append("can_contact", canContact ? "yes" : "no");
 
-    body.append("app", "element-web");
+    body.append("app", "privateLINE Comms Desktop/Web");
     body.append("version", version || "UNKNOWN");
     body.append("platform", PlatformPeg.get()?.getHumanReadableName() ?? "n/a");
     body.append("user_id", MatrixClientPeg.get()?.getUserId() ?? "n/a");
