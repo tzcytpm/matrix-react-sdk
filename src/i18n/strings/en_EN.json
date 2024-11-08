@@ -2047,7 +2047,7 @@
             "retry_all": "Retry all",
             "select_messages_to_retry": "You can select all or individual messages to retry or delete",
             "server_connectivity_lost_description": "Please check & make sure: 1. privateLINE is switched ON  2. Your internet is working. Need help? Please contact support@privateline.io.",
-            "server_connectivity_lost_title": "Connectivity to the privateLINE Comms server has been interrupted.",
+            "server_connectivity_lost_title": "Connectivity to the PL Comms server has been interrupted.",
             "some_messages_not_sent": "Some of your messages have not been sent"
         },
         "unknown_status_code_for_timeline_jump": "unknown status code",
