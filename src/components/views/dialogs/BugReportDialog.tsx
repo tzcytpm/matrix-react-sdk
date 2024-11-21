@@ -224,7 +224,7 @@ export default class BugReportDialog extends React.Component<IProps, IState> {
                 <div className="mx_Dialog_content" id="mx_Dialog_content">
                     {warning}
                     <p>{_t("bug_reporting|description")}</p>
-                    <p>
+                    {/* <p>
                         <b>
                             {_t(
                                 "bug_reporting|before_submitting",
@@ -242,7 +242,7 @@ export default class BugReportDialog extends React.Component<IProps, IState> {
                                 },
                             )}
                         </b>
-                    </p>
+                    </p> */}
 
                     <div className="mx_BugReportDialog_download">
                         <AccessibleButton onClick={this.onDownload} kind="link" disabled={this.state.downloadBusy}>
@@ -251,7 +251,7 @@ export default class BugReportDialog extends React.Component<IProps, IState> {
                         {this.state.downloadProgress && <span>{this.state.downloadProgress} ...</span>}
                     </div>
 
-                    <Field
+                    {/* <Field
                         type="text"
                         className="mx_BugReportDialog_field_input"
                         label={_t("bug_reporting|github_issue")}
@@ -259,7 +259,7 @@ export default class BugReportDialog extends React.Component<IProps, IState> {
                         value={this.state.issueUrl}
                         placeholder="https://github.com/vector-im/element-web/issues/..."
                         ref={this.issueRef}
-                    />
+                    /> */}
                     <Field
                         className="mx_BugReportDialog_field_input"
                         element="textarea"

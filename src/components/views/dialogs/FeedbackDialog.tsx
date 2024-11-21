@@ -120,7 +120,7 @@ const FeedbackDialog: React.FC<IProps> = (props: IProps) => {
             title={_t("common|feedback")}
             description={
                 <React.Fragment>
-                    <div className="mx_FeedbackDialog_section mx_FeedbackDialog_reportBug">
+                    {/* <div className="mx_FeedbackDialog_section mx_FeedbackDialog_reportBug">
                         <h3>{_t("common|report_a_bug")}</h3>
                         <p>
                             {_t(
@@ -149,7 +149,7 @@ const FeedbackDialog: React.FC<IProps> = (props: IProps) => {
                             )}
                         </p>
                         {bugReports}
-                    </div>
+                    </div> */}
                     {feedbackSection}
                 </React.Fragment>
             }
