@@ -79,8 +79,6 @@ interface IProps {
     onLoggedIn(params: IMatrixClientCreds, password: string): Promise<void>;
     // registration shouldn't know or care how login is done.
     onLoginClick(): void;
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    onGoBackLoginSsoClicked(): void;
     onServerConfigChange(config: ValidatedServerConfig): void;
 }
 
@@ -469,14 +467,7 @@ export default class Registration extends React.Component<IProps, IState> {
         ev.stopPropagation();
         this.props.onLoginClick();
     };
-
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    private onGoBackLoginSsoClicked = (ev: ButtonEvent): void => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        this.props.onGoBackLoginSsoClicked();
-    };
-
+    
     private onGoToFormClicked = (ev: ButtonEvent): void => {
         ev.preventDefault();
         ev.stopPropagation();
@@ -657,11 +648,6 @@ export default class Registration extends React.Component<IProps, IState> {
                             ),
                         },
                     )}
-                </span>
-                <span className="mx_AuthBody_changeFlow">
-                    <AccessibleButton kind="link_inline"  onClick={this.onGoBackLoginSsoClicked}>
-                        {_t("action|go_back")}
-                    </AccessibleButton>
                 </span>
             </div>
         );

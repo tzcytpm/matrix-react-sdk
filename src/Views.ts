@@ -25,10 +25,6 @@ enum Views {
 
     // we are showing the welcome view
     WELCOME,
-
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    LOGIN_SSO,
-
     // we are showing the login view
     LOGIN,
 

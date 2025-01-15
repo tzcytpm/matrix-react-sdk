@@ -146,8 +146,6 @@ import { checkSessionLockFree, getSessionLock } from "../../utils/SessionLock";
 import { SessionLockStolenView } from "./auth/SessionLockStolenView";
 import { ConfirmSessionLockTheftView } from "./auth/ConfirmSessionLockTheftView";
 import { LoginSplashView } from "./auth/LoginSplashView";
-import { LoginSsoView} from "./auth/LoginSso"; // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-
 
 // @Thz 29 June 2024: show Generate Key/Passphrase on SignIn flow
 import { accessSecretStorage } from "../../SecurityManager";
@@ -805,9 +803,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                 break;
             }
             case "view_welcome_page":
-                // this.viewWelcome();
-		// @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-                this.viewLoginPrivateLineSSO();
+                this.viewWelcome();
 
                 break;
             case Action.ViewHomePage:
@@ -1091,17 +1087,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             view: Views.WELCOME,
         });
         this.notifyNewScreen("welcome");
-        ThemeController.isLogin = true;
-        this.themeWatcher.recheck();
-    }
-
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    private viewLoginPrivateLineSSO(otherState?: any): void {
-        this.setStateForNewView({
-            view: Views.LOGIN_SSO,
-            ...otherState,
-        });
-        this.notifyNewScreen("login_sso");
         ThemeController.isLogin = true;
         this.themeWatcher.recheck();
     }
@@ -1475,8 +1460,7 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
      * Called when the session is logged out
      */
     private onLoggedOut(): void {
-        // @Thz 15 Aug 2024: redirect to Login_Sso after logout 
-        this.viewLoginPrivateLineSSO({
+        this.viewLogin({
             ready: false,
             collapseLhs: false,
             currentRoomId: null,
@@ -1754,11 +1738,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                 params: params,
             });
             PerformanceMonitor.instance.start(PerformanceEntryNames.LOGIN);
-        } else if (screen === "login_sso") {
-		// @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-                dis.dispatch({
-                    action: "view_welcome_page",
-                });
         } else if (screen === "forgot_password") {
             dis.dispatch({
                 action: "start_password_recovery",
@@ -1941,16 +1920,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
     private onLoginClick = (): void => {
         this.showScreen("login");
     };
-
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    private onLoginSeparateAccountClick = (): void => {
-        this.showScreen("login");
-    };
-
-    private onGoBackLoginSsoClicked = (): void => {
-        this.showScreen("login_sso");
-    };
-    
     
     private onForgotPasswordClick = (): void => {
         this.showScreen("forgot_password");
@@ -2113,14 +2082,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
             }
         } else if (this.state.view === Views.WELCOME) {
             view = <Welcome />;
-        } else if (this.state.view === Views.LOGIN_SSO) {
-		// @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-                // view = <Welcome />;
-                const showPasswordReset = SettingsStore.getValue(UIFeature.PasswordReset);
-                view = (
-                    <LoginSsoView
-                    />
-                );
         } else if (this.state.view === Views.REGISTER && SettingsStore.getValue(UIFeature.Registration)) {
             const email = ThreepidInviteStore.instance.pickBestInvite()?.toEmail;
             view = (
@@ -2132,7 +2093,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                     brand={this.props.config.brand}
                     onLoggedIn={this.onRegisterFlowComplete}
                     onLoginClick={this.onLoginClick}
-                    onGoBackLoginSsoClicked={this.onGoBackLoginSsoClicked} // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
                     onServerConfigChange={this.onServerConfigChange}
                     defaultDeviceDisplayName={this.props.defaultDeviceDisplayName}
                     fragmentAfterLogin={fragmentAfterLogin}
@@ -2154,7 +2114,6 @@ export default class MatrixChat extends React.PureComponent<IProps, IState> {
                     isSyncing={this.state.pendingInitialSync}
                     onLoggedIn={this.onUserCompletedLoginFlow}
                     onRegisterClick={this.onRegisterClick}
-                    onGoBackLoginSsoClicked={this.onGoBackLoginSsoClicked} // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
                     fallbackHsUrl={this.getFallbackHsUrl()}
                     defaultDeviceDisplayName={this.props.defaultDeviceDisplayName}
                     onForgotPasswordClick={showPasswordReset ? this.onForgotPasswordClick : undefined}

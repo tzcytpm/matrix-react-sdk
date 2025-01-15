@@ -63,8 +63,6 @@ interface IProps {
 
     // login shouldn't know or care how registration, password recovery, etc is done.
     onRegisterClick(): void;
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    onGoBackLoginSsoClicked(): void;
     onForgotPasswordClick?(): void;
     onServerConfigChange(config: ValidatedServerConfig): void;
 }
@@ -300,12 +298,6 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
         this.props.onRegisterClick();
     };
 
-    // @Thz 09 July 2024: adding Login PrivateLine SSO on Welcome page
-    public onGoBackLoginSsoClicked = (ev: ButtonEvent): void => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        this.props.onGoBackLoginSsoClicked();
-    };
 
     public onTryRegisterClick = (ev: ButtonEvent): void => {
         const hasPasswordFlow = this.state.flows?.find((flow) => flow.type === "m.login.password");
@@ -551,11 +543,6 @@ export default class LoginComponent extends React.PureComponent<IProps, IState> 
                                 ),
                             },
                         )}
-                    </span>
-                    <span className="mx_AuthBody_changeFlow">
-                    <AccessibleButton kind="link_inline"  onClick={this.onGoBackLoginSsoClicked}>
-                        {_t("action|go_back")}
-                    </AccessibleButton>
                     </span>
                 </div>
             );
