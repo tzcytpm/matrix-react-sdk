@@ -33,6 +33,8 @@ import { UIFeature } from "./settings/UIFeature";
 // Regex for what a "safe" or "Matrix-looking" localpart would be.
 // TODO: Update as needed for https://github.com/matrix-org/matrix-doc/issues/1514
 export const SAFE_LOCALPART_REGEX = /^[a-z0-9=_\-./]+$/;
+export const PL_ACCOUNT_ID_REGEX = /^((a\-)?[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4})$/;
+
 
 /**
  * Starts either the ILAG or full registration flow, depending

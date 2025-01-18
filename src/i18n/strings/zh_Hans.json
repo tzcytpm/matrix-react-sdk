@@ -261,6 +261,8 @@
         "registration_username_in_use": "该名称已被占用。 尝试另一个，或者如果是您，请在下面登录。",
         "registration_username_unable_check": "无法检查用户名是否已被使用。稍后再试。",
         "registration_username_validation": "仅使用小写字母，数字，连字符和下划线",
+        "registration_username_is_pl_account_id_invalid": "这些 a-XXXX-XXXX-XXXX 和 XXXX-XXXX-XXXX 是为 PrivateLine 帐户 ID 保留的，请选择其他用户名。",
+
         "reset_password": {
             "devices_logout_success": "你已登出全部设备，并将不再收到推送通知。要重新启用通知，请在每台设备上再次登入。",
             "other_devices_logout_warning_1": "登出你的设备会删除存储在其上的消息加密密钥，使加密的聊天历史不可读。",

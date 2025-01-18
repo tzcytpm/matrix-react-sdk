@@ -25,6 +25,7 @@ import Modal from "../../../Modal";
 import { _t, _td } from "../../../languageHandler";
 import SdkConfig from "../../../SdkConfig";
 import { SAFE_LOCALPART_REGEX } from "../../../Registration";
+import { PL_ACCOUNT_ID_REGEX } from "../../../Registration";
 import withValidation, { IFieldState, IValidationResult } from "../elements/Validation";
 import { ValidatedServerConfig } from "../../../utils/ValidatedServerConfig";
 import EmailField from "./EmailField";
@@ -403,6 +404,11 @@ export default class RegistrationForm extends React.PureComponent<IProps, IState
                     usernameAvailable === UsernameAvailableStatus.Error
                         ? _t("auth|registration_username_unable_check")
                         : _t("auth|registration_username_in_use"),
+            },
+            {
+                key: "not_privateline_account_id",
+                test: ({ value }) => (!!value && !PL_ACCOUNT_ID_REGEX.test(value)),
+                invalid: () => _t("auth|registration_username_is_pl_account_id_invalid"),
             },
         ],
     });

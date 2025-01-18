@@ -285,6 +285,8 @@
         "registration_username_in_use": "Someone already has that username. Try another or if it is you, sign in below.",
         "registration_username_unable_check": "Unable to check if username has been taken. Try again later.",
         "registration_username_validation": "Use lowercase letters, numbers, hyphens and underscores only",
+        "registration_username_is_pl_account_id_invalid": "These a-XXXX-XXXX-XXXX and XXXX-XXXX-XXXX are reserved for PrivateLine Account ID, Please choose another username.",
+
         "reset_password": {
             "confirm_new_password": "Confirm new password",
             "devices_logout_success": "You have been logged out of all devices and will no longer receive push notifications. To re-enable notifications, sign in again on each device.",
