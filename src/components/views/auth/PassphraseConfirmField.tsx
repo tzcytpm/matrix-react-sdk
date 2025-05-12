@@ -19,6 +19,8 @@ import React, { PureComponent, RefCallback, RefObject } from "react";
 import Field, { IInputProps } from "../elements/Field";
 import withValidation, { IFieldState, IValidationResult } from "../elements/Validation";
 import { _t, _td, TranslationKey } from "../../../languageHandler";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
+
 
 interface IProps extends Omit<IInputProps, "onValidate" | "label" | "element"> {
     id?: string;
@@ -35,7 +37,15 @@ interface IProps extends Omit<IInputProps, "onValidate" | "label" | "element"> {
     onValidate?(result: IValidationResult): void;
 }
 
+interface IState {
+    showConfirmPassword: boolean;
+}
+
 class PassphraseConfirmField extends PureComponent<IProps> {
+    public state: IState = {
+        showConfirmPassword: false,
+    };
+
     public static defaultProps = {
         label: _td("auth|change_password_confirm_label"),
         labelRequired: _td("auth|change_password_confirm_label"),
@@ -66,12 +76,22 @@ class PassphraseConfirmField extends PureComponent<IProps> {
         return result;
     };
 
+    private togglePasswordVisibility = (): void => {
+        this.setState((prevState) => ({
+            showConfirmPassword: !prevState.showConfirmPassword,
+        }));
+    };
+
     public render(): React.ReactNode {
+        const { showConfirmPassword } = this.state;
+
         return (
+            <div className="mx_PassphraseField_container">
+
             <Field
                 id={this.props.id}
                 ref={this.props.fieldRef}
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 label={_t(this.props.label)}
                 autoComplete={this.props.autoComplete}
                 value={this.props.value}
@@ -79,6 +99,14 @@ class PassphraseConfirmField extends PureComponent<IProps> {
                 onValidate={this.onValidate}
                 autoFocus={this.props.autoFocus}
             />
+            <span
+                    className="mx_PassphraseField_toggle"
+                    onClick={this.togglePasswordVisibility}
+                    aria-label={showConfirmPassword ? _t("Hide_password") : _t("Show_password")}
+                >
+                    {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
+            </span>
+        </div>
         );
     }
 }

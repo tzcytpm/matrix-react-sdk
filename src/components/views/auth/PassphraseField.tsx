@@ -23,6 +23,7 @@ import withValidation, { IFieldState, IValidationResult } from "../elements/Vali
 import { _t, _td, TranslationKey } from "../../../languageHandler";
 import Field, { IInputProps } from "../elements/Field";
 import { MatrixClientPeg } from "../../../MatrixClientPeg";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 interface IProps extends Omit<IInputProps, "onValidate" | "element"> {
     autoFocus?: boolean;
@@ -43,7 +44,21 @@ interface IProps extends Omit<IInputProps, "onValidate" | "element"> {
     onValidate?(result: IValidationResult): void;
 }
 
+interface IState {
+    showPassword: boolean;
+}
+
 class PassphraseField extends PureComponent<IProps> {
+    public state: IState = {
+        showPassword: false,
+    };
+
+    private togglePasswordVisibility = (): void => {
+        this.setState((prevState) => ({
+            showPassword: !prevState.showPassword,
+        }));
+    };
+
     public static defaultProps = {
         label: _td("common|password"),
         labelEnterPassword: _td("auth|password_field_label"),
@@ -107,19 +122,33 @@ class PassphraseField extends PureComponent<IProps> {
     };
 
     public render(): React.ReactNode {
+        const { showPassword } = this.state;
+
         return (
+            <div className="mx_PassphraseField_container">
+
             <Field
                 id={this.props.id}
                 autoFocus={this.props.autoFocus}
                 className={classNames("mx_PassphraseField", this.props.className)}
                 ref={this.props.fieldRef}
-                type="password"
+                type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
                 label={_t(this.props.label)}
                 value={this.props.value}
                 onChange={this.props.onChange}
                 onValidate={this.onValidate}
             />
+
+            <span
+                    className="mx_PassphraseField_toggle"
+                    onClick={this.togglePasswordVisibility}
+                    aria-label={showPassword ? _t("Hide_password") : _t("Show_password")}
+                >
+                    {showPassword ? <BsEyeSlash /> : <BsEye />}
+            </span>
+        </div>
+
         );
     }
 }
