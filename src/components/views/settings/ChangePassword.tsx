@@ -26,6 +26,8 @@ import withValidation, { IFieldState, IValidationResult } from "../elements/Vali
 import { UserFriendlyError, _t, _td } from "../../../languageHandler";
 import Modal from "../../../Modal";
 import PassphraseField from "../auth/PassphraseField";
+import PassphraseConfirmField from "../auth/PassphraseConfirmField";
+
 import { PASSWORD_MIN_SCORE } from "../auth/RegistrationForm";
 import SetEmailDialog from "../dialogs/SetEmailDialog";
 
@@ -341,9 +343,17 @@ export default class ChangePassword extends React.Component<IProps, IState> {
                 return (
                     <form className={this.props.className} onSubmit={this.onClickChange}>
                         <div className={rowClassName}>
-                            <Field
+                            {/* <Field
                                 ref={(field) => (this[FIELD_OLD_PASSWORD] = field)}
                                 type="password"
+                                label={_t("auth|change_password_current_label")}
+                                value={this.state.oldPassword}
+                                onChange={this.onChangeOldPassword}
+                                onValidate={this.onOldPasswordValidate}
+                            /> */}
+                            <PassphraseField
+                                fieldRef={(field) => (this[FIELD_OLD_PASSWORD] = field)}
+                                // type="password"
                                 label={_t("auth|change_password_current_label")}
                                 value={this.state.oldPassword}
                                 onChange={this.onChangeOldPassword}
@@ -353,7 +363,7 @@ export default class ChangePassword extends React.Component<IProps, IState> {
                         <div className={rowClassName}>
                             <PassphraseField
                                 fieldRef={(field) => (this[FIELD_NEW_PASSWORD] = field)}
-                                type="password"
+                                // type="password"
                                 label={_td("auth|change_password_new_label")}
                                 minScore={PASSWORD_MIN_SCORE}
                                 value={this.state.newPassword}
@@ -364,7 +374,7 @@ export default class ChangePassword extends React.Component<IProps, IState> {
                             />
                         </div>
                         <div className={rowClassName}>
-                            <Field
+                            {/* <Field
                                 ref={(field) => (this[FIELD_NEW_PASSWORD_CONFIRM] = field)}
                                 type="password"
                                 label={_t("auth|change_password_confirm_label")}
@@ -372,7 +382,16 @@ export default class ChangePassword extends React.Component<IProps, IState> {
                                 onChange={this.onChangeNewPasswordConfirm}
                                 onValidate={this.onNewPasswordConfirmValidate}
                                 autoComplete="new-password"
-                            />
+                            /> */}
+                             <PassphraseConfirmField
+                                    fieldRef={(field) => (this[FIELD_NEW_PASSWORD_CONFIRM] = field)}
+                                    // type="password"
+                                    label={_t("auth|change_password_confirm_label")}
+                                    value={this.state.newPasswordConfirm}
+                                    onChange={this.onChangeNewPasswordConfirm}
+                                    onValidate={this.onNewPasswordConfirmValidate}
+                                    autoComplete="new-password"
+                                />
                         </div>
                         <AccessibleButton
                             className={buttonClassName}

@@ -29,12 +29,14 @@ import AuthPage from "../../views/auth/AuthPage";
 import { SSO_HOMESERVER_URL_KEY, SSO_ID_SERVER_URL_KEY } from "../../../BasePlatform";
 import SSOButtons from "../../views/elements/SSOButtons";
 import ConfirmWipeDeviceDialog from "../../views/dialogs/ConfirmWipeDeviceDialog";
-import Field from "../../views/elements/Field";
+// import Field from "../../views/elements/Field";
 import AccessibleButton from "../../views/elements/AccessibleButton";
 import Spinner from "../../views/elements/Spinner";
 import AuthHeader from "../../views/auth/AuthHeader";
 import AuthBody from "../../views/auth/AuthBody";
 import { SDKContext } from "../../../contexts/SDKContext";
+import PassphraseField from "../../views/auth/PassphraseField";
+
 
 enum LoginView {
     Loading,
@@ -238,8 +240,14 @@ export default class SoftLogout extends React.Component<IProps, IState> {
             <form onSubmit={this.onPasswordLogin}>
                 {introText ? <p>{introText}</p> : null}
                 {error}
-                <Field
+                {/* <Field
                     type="password"
+                    label={_t("common|password")}
+                    onChange={this.onPasswordChange}
+                    value={this.state.password}
+                    disabled={this.state.busy}
+                /> */}
+                <PassphraseField
                     label={_t("common|password")}
                     onChange={this.onPasswordChange}
                     value={this.state.password}

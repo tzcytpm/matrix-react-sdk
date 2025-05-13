@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import React, { PureComponent, RefCallback, RefObject } from "react";
+import classNames from "classnames";
 
 import Field, { IInputProps } from "../elements/Field";
 import withValidation, { IFieldState, IValidationResult } from "../elements/Validation";
@@ -92,6 +93,7 @@ class PassphraseConfirmField extends PureComponent<IProps> {
                 id={this.props.id}
                 ref={this.props.fieldRef}
                 type={showConfirmPassword ? "text" : "password"}
+                className={classNames("mx_PassphraseField", this.props.className)}
                 label={_t(this.props.label)}
                 autoComplete={this.props.autoComplete}
                 value={this.props.value}
