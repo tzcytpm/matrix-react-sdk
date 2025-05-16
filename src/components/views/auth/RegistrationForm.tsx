@@ -35,6 +35,8 @@ import RegistrationEmailPromptDialog from "../dialogs/RegistrationEmailPromptDia
 import CountryDropdown from "./CountryDropdown";
 import PassphraseConfirmField from "./PassphraseConfirmField";
 import { PosthogAnalytics } from "../../../PosthogAnalytics";
+import classNames from "classnames";
+
 
 enum RegistrationField {
     Email = "field_email",
@@ -477,6 +479,8 @@ export default class RegistrationForm extends React.PureComponent<IProps, IState
             <PassphraseField
                 id="mx_RegistrationForm_password"
                 fieldRef={(field) => (this[RegistrationField.Password] = field)}
+                className="mx_PassphraseField_register"
+                classNameContainer="mx_PassphraseField_container_register"
                 minScore={PASSWORD_MIN_SCORE}
                 value={this.state.password}
                 onChange={this.onPasswordChange}
@@ -491,6 +495,8 @@ export default class RegistrationForm extends React.PureComponent<IProps, IState
             <PassphraseConfirmField
                 id="mx_RegistrationForm_passwordConfirm"
                 fieldRef={(field) => (this[RegistrationField.PasswordConfirm] = field)}
+                className="mx_PassphraseField_register"
+                classNameContainer="mx_PassphraseField_container_register"
                 autoComplete="new-password"
                 value={this.state.passwordConfirm}
                 password={this.state.password}
@@ -574,7 +580,8 @@ export default class RegistrationForm extends React.PureComponent<IProps, IState
         return (
             <div>
                 <form onSubmit={this.onSubmit}>
-                    <div className="mx_AuthBody_fieldRow">{this.renderUsername()}</div>
+                    <div className="mx_AuthBody_fieldRow mx_AuthBody_fieldRow_rewidth">
+                        {this.renderUsername()}</div>
                     <div className="mx_AuthBody_fieldRow">
                         {this.renderPassword()}
                         {this.renderPasswordConfirm()}

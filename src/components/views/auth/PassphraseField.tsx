@@ -29,6 +29,7 @@ interface IProps extends Omit<IInputProps, "onValidate" | "element"> {
     autoFocus?: boolean;
     id?: string;
     className?: string;
+    classNameContainer?: string;
     minScore: 0 | 1 | 2 | 3 | 4;
     value: string;
     fieldRef?: RefCallback<Field> | RefObject<Field>;
@@ -125,7 +126,7 @@ class PassphraseField extends PureComponent<IProps> {
         const { showPassword } = this.state;
 
         return (
-            <div className="mx_PassphraseField_container">
+            <div className={classNames("mx_PassphraseField_container", this.props.classNameContainer)}>
 
             <Field
                 id={this.props.id}
@@ -139,11 +140,9 @@ class PassphraseField extends PureComponent<IProps> {
                 onChange={this.props.onChange}
                 onValidate={this.onValidate}
             />
-
             <span
                     className="mx_PassphraseField_toggle"
                     onClick={this.togglePasswordVisibility}
-                    aria-label={showPassword ? _t("Hide_password") : _t("Show_password")}
                 >
                     {showPassword ? <BsEyeSlash /> : <BsEye />}
             </span>

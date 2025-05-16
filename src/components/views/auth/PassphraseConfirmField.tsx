@@ -29,6 +29,8 @@ interface IProps extends Omit<IInputProps, "onValidate" | "label" | "element"> {
     autoComplete?: string;
     value: string;
     password: string; // The password we're confirming
+    className?: string;
+    classNameContainer?: string;
 
     label: TranslationKey;
     labelRequired: TranslationKey;
@@ -87,7 +89,7 @@ class PassphraseConfirmField extends PureComponent<IProps> {
         const { showConfirmPassword } = this.state;
 
         return (
-            <div className="mx_PassphraseField_container">
+            <div className={classNames("mx_PassphraseField_container", this.props.classNameContainer)}>
 
             <Field
                 id={this.props.id}
@@ -104,7 +106,6 @@ class PassphraseConfirmField extends PureComponent<IProps> {
             <span
                     className="mx_PassphraseField_toggle"
                     onClick={this.togglePasswordVisibility}
-                    aria-label={showConfirmPassword ? _t("Hide_password") : _t("Show_password")}
                 >
                     {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
             </span>

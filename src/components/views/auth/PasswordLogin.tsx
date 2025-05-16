@@ -436,27 +436,28 @@ export default class PasswordLogin extends React.PureComponent<IProps, IState> {
                 <form onSubmit={this.onSubmitForm}>
                     {loginType}
                     {loginField}
-                    <Field
-                        id="mx_LoginForm_password"
-                        className={pwFieldClass}
-                        autoComplete="current-password"
-                        type={showPassword ? "text" : "password"} // Toggle between "text" and "password"
-                        name="password"
-                        label={_t("common|password")}
-                        value={this.state.password}
-                        onChange={this.onPasswordChanged}
-                        disabled={this.props.busy}
-                        autoFocus={autoFocusPassword}
-                        onValidate={this.onPasswordValidate}
-                        ref={(field) => (this[LoginField.Password] = field)}
-                    />
-                    <span
-                        className="mx_PasswordField_toggle"
-                        onClick={this.togglePasswordVisibility}
-                        aria-label={showPassword ? _t("Hide password") : _t("Show password")}
-                    >
-                        {showPassword ? <BsEyeSlash /> : <BsEye />}
-                    </span>
+                    <div className="mx_PasswordField_container">
+                        <Field
+                            id="mx_LoginForm_password"
+                            className={pwFieldClass}
+                            autoComplete="current-password"
+                            type={showPassword ? "text" : "password"} // Toggle between "text" and "password"
+                            name="password"
+                            label={_t("common|password")}
+                            value={this.state.password}
+                            onChange={this.onPasswordChanged}
+                            disabled={this.props.busy}
+                            autoFocus={autoFocusPassword}
+                            onValidate={this.onPasswordValidate}
+                            ref={(field) => (this[LoginField.Password] = field)}
+                        />
+                        <span
+                            className="mx_PasswordField_toggle"
+                            onClick={this.togglePasswordVisibility}                   
+                        >
+                            {showPassword ? <BsEyeSlash /> : <BsEye />}
+                        </span>
+                    </div>
                     {forgotPasswordJsx}
                     {!this.props.busy && (
                         <input
