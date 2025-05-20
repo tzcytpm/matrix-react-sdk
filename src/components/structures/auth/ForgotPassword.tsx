@@ -384,7 +384,7 @@ export default class ForgotPassword extends React.Component<Props, State> {
                         <div className="mx_AuthBody_fieldRow">
                             <PassphraseField
                                 name="reset_password"
-                                // type="password"
+                                type="password"
                                 label={_td("auth|change_password_new_label")}
                                 value={this.state.password}
                                 minScore={PASSWORD_MIN_SCORE}

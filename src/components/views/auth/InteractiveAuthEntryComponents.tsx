@@ -21,7 +21,7 @@ import { logger } from "matrix-js-sdk/src/logger";
 import React, { ChangeEvent, createRef, FormEvent, Fragment } from "react";
 
 import EmailPromptIcon from "../../../../res/img/element-icons/email-prompt.svg";
-import { _t, _td } from "../../../languageHandler";
+import { _t } from "../../../languageHandler";
 import SettingsStore from "../../../settings/SettingsStore";
 import { LocalisedPolicy, Policies } from "../../../Terms";
 import { AuthHeaderModifier } from "../../structures/auth/header/AuthHeaderModifier";
@@ -31,8 +31,6 @@ import Field from "../elements/Field";
 import Spinner from "../elements/Spinner";
 import { Alignment } from "../elements/Tooltip";
 import CaptchaForm from "./CaptchaForm";
-import PassphraseField from "./PassphraseField";
-
 
 /* This file contains a collection of components which are used by the
  * InteractiveAuth to prompt the user to enter the information needed
@@ -173,19 +171,11 @@ export class PasswordAuthEntry extends React.Component<IAuthEntryProps, IPasswor
             <div>
                 <p>{_t("auth|uia|password_prompt")}</p>
                 <form onSubmit={this.onSubmit} className="mx_InteractiveAuthEntryComponents_passwordSection">
-                    {/* <Field
+                    <Field
                         className={passwordBoxClass}
                         type="password"
                         name="passwordField"
                         label={_t("common|password")}
-                        autoFocus={true}
-                        value={this.state.password}
-                        onChange={this.onPasswordFieldChange}
-                    /> */}
-                     <PassphraseField
-                        className={passwordBoxClass}
-                        name="passwordField"
-                        label={_td("common|password")}
                         autoFocus={true}
                         value={this.state.password}
                         onChange={this.onPasswordFieldChange}

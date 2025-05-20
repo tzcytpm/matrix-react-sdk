@@ -15,13 +15,10 @@ limitations under the License.
 */
 
 import React, { PureComponent, RefCallback, RefObject } from "react";
-import classNames from "classnames";
 
 import Field, { IInputProps } from "../elements/Field";
 import withValidation, { IFieldState, IValidationResult } from "../elements/Validation";
 import { _t, _td, TranslationKey } from "../../../languageHandler";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
-
 
 interface IProps extends Omit<IInputProps, "onValidate" | "label" | "element"> {
     id?: string;
@@ -29,8 +26,6 @@ interface IProps extends Omit<IInputProps, "onValidate" | "label" | "element"> {
     autoComplete?: string;
     value: string;
     password: string; // The password we're confirming
-    className?: string;
-    classNameContainer?: string;
 
     label: TranslationKey;
     labelRequired: TranslationKey;
@@ -40,15 +35,7 @@ interface IProps extends Omit<IInputProps, "onValidate" | "label" | "element"> {
     onValidate?(result: IValidationResult): void;
 }
 
-interface IState {
-    showConfirmPassword: boolean;
-}
-
 class PassphraseConfirmField extends PureComponent<IProps> {
-    public state: IState = {
-        showConfirmPassword: false,
-    };
-
     public static defaultProps = {
         label: _td("auth|change_password_confirm_label"),
         labelRequired: _td("auth|change_password_confirm_label"),
@@ -79,23 +66,12 @@ class PassphraseConfirmField extends PureComponent<IProps> {
         return result;
     };
 
-    private togglePasswordVisibility = (): void => {
-        this.setState((prevState) => ({
-            showConfirmPassword: !prevState.showConfirmPassword,
-        }));
-    };
-
     public render(): React.ReactNode {
-        const { showConfirmPassword } = this.state;
-
         return (
-            <div className={classNames("mx_PassphraseField_container", this.props.classNameContainer)}>
-
             <Field
                 id={this.props.id}
                 ref={this.props.fieldRef}
-                type={showConfirmPassword ? "text" : "password"}
-                className={classNames("mx_PassphraseField", this.props.className)}
+                type="password"
                 label={_t(this.props.label)}
                 autoComplete={this.props.autoComplete}
                 value={this.props.value}
@@ -103,13 +79,6 @@ class PassphraseConfirmField extends PureComponent<IProps> {
                 onValidate={this.onValidate}
                 autoFocus={this.props.autoFocus}
             />
-            <span
-                    className="mx_PassphraseField_toggle"
-                    onClick={this.togglePasswordVisibility}
-                >
-                    {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
-            </span>
-        </div>
         );
     }
 }

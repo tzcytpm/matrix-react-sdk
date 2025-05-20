@@ -21,17 +21,15 @@ import { logger } from "matrix-js-sdk/src/logger";
 import { SecretStorage } from "matrix-js-sdk/src/matrix";
 
 import { MatrixClientPeg } from "../../../../MatrixClientPeg";
-// import Field from "../../elements/Field";
+import Field from "../../elements/Field";
 import AccessibleButton, { ButtonEvent } from "../../elements/AccessibleButton";
-import { _t, _td } from "../../../../languageHandler";
+import { _t } from "../../../../languageHandler";
 import { accessSecretStorage } from "../../../../SecurityManager";
 import Modal from "../../../../Modal";
 import InteractiveAuthDialog from "../InteractiveAuthDialog";
 import DialogButtons from "../../elements/DialogButtons";
 import BaseDialog from "../BaseDialog";
 import { chromeFileInputFix } from "../../../../utils/BrowserWorkarounds";
-import PassphraseField from "../../auth/PassphraseField";
-
 
 // Maximum acceptable size of a key file. It's 59 characters including the spaces we encode,
 // so this should be plenty and allow for people putting extra whitespace in the file because
@@ -349,22 +347,12 @@ export default class AccessSecretStorageDialog extends React.PureComponent<IProp
                     </p>
 
                     <form className="mx_AccessSecretStorageDialog_primaryContainer" onSubmit={this.onPassPhraseNext}>
-                        {/* <Field
+                        <Field
                             inputRef={this.inputRef}
                             id="mx_passPhraseInput"
                             className="mx_AccessSecretStorageDialog_passPhraseInput"
                             type="password"
                             label={_t("encryption|access_secret_storage_dialog|security_phrase_title")}
-                            value={this.state.passPhrase}
-                            onChange={this.onPassPhraseChange}
-                            autoFocus={true}
-                            autoComplete="new-password"
-                        /> */}
-                        <PassphraseField
-                            inputRef={this.inputRef}
-                            id="mx_passPhraseInput"
-                            className="mx_AccessSecretStorageDialog_passPhraseInput"
-                            label={_td("encryption|access_secret_storage_dialog|security_phrase_title")}
                             value={this.state.passPhrase}
                             onChange={this.onPassPhraseChange}
                             autoFocus={true}
@@ -406,28 +394,6 @@ export default class AccessSecretStorageDialog extends React.PureComponent<IProp
                     >
                         <div className="mx_AccessSecretStorageDialog_recoveryKeyEntry">
                             <div className="mx_AccessSecretStorageDialog_recoveryKeyEntry_textInput">
-                                <PassphraseField
-                                    id="mx_securityKey"
-                                    label={_td("encryption|access_secret_storage_dialog|security_key_title")}
-                                    value={this.state.recoveryKey}
-                                    onChange={this.onRecoveryKeyChange}
-                                    autoFocus={true}
-                                    forceValidity={this.state.recoveryKeyCorrect ?? undefined}
-                                    autoComplete="off"
-                                />
-
-                                {/* <PassphraseField
-                                    fieldRef={(field) => (this[FIELD_NEW_PASSWORD] = field)}
-                                    type="password"
-                                    label={_td("auth|change_password_new_label")}
-                                    minScore={PASSWORD_MIN_SCORE}
-                                    value={this.state.newPassword}
-                                    autoFocus={this.props.autoFocusNewPasswordInput}
-                                    onChange={this.onChangeNewPassword}
-                                    onValidate={this.onNewPasswordValidate}
-                                    autoComplete="new-password"
-                                />
-
                                 <Field
                                     type="password"
                                     id="mx_securityKey"
@@ -437,7 +403,7 @@ export default class AccessSecretStorageDialog extends React.PureComponent<IProp
                                     autoFocus={true}
                                     forceValidity={this.state.recoveryKeyCorrect ?? undefined}
                                     autoComplete="off"
-                                /> */}
+                                />
                             </div>
                             <span className="mx_AccessSecretStorageDialog_recoveryKeyEntry_entryControlSeparatorText">
                                 {_t("encryption|access_secret_storage_dialog|separator", {

@@ -23,13 +23,11 @@ import withValidation, { IFieldState, IValidationResult } from "../elements/Vali
 import { _t, _td, TranslationKey } from "../../../languageHandler";
 import Field, { IInputProps } from "../elements/Field";
 import { MatrixClientPeg } from "../../../MatrixClientPeg";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 interface IProps extends Omit<IInputProps, "onValidate" | "element"> {
     autoFocus?: boolean;
     id?: string;
     className?: string;
-    classNameContainer?: string;
     minScore: 0 | 1 | 2 | 3 | 4;
     value: string;
     fieldRef?: RefCallback<Field> | RefObject<Field>;
@@ -45,21 +43,7 @@ interface IProps extends Omit<IInputProps, "onValidate" | "element"> {
     onValidate?(result: IValidationResult): void;
 }
 
-interface IState {
-    showPassword: boolean;
-}
-
 class PassphraseField extends PureComponent<IProps> {
-    public state: IState = {
-        showPassword: false,
-    };
-
-    private togglePasswordVisibility = (): void => {
-        this.setState((prevState) => ({
-            showPassword: !prevState.showPassword,
-        }));
-    };
-
     public static defaultProps = {
         label: _td("common|password"),
         labelEnterPassword: _td("auth|password_field_label"),
@@ -123,31 +107,19 @@ class PassphraseField extends PureComponent<IProps> {
     };
 
     public render(): React.ReactNode {
-        const { showPassword } = this.state;
-
         return (
-            <div className={classNames("mx_PassphraseField_container", this.props.classNameContainer)}>
-
             <Field
                 id={this.props.id}
                 autoFocus={this.props.autoFocus}
                 className={classNames("mx_PassphraseField", this.props.className)}
                 ref={this.props.fieldRef}
-                type={showPassword ? "text" : "password"}
+                type="password"
                 autoComplete="new-password"
                 label={_t(this.props.label)}
                 value={this.props.value}
                 onChange={this.props.onChange}
                 onValidate={this.onValidate}
             />
-            <span
-                    className="mx_PassphraseField_toggle"
-                    onClick={this.togglePasswordVisibility}
-                >
-                    {showPassword ? <BsEyeSlash /> : <BsEye />}
-            </span>
-        </div>
-
         );
     }
 }

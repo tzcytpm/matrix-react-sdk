@@ -26,8 +26,6 @@ import Field from "../elements/Field";
 import CountryDropdown from "./CountryDropdown";
 import EmailField from "./EmailField";
 import { PhoneNumberCountryDefinition } from "../../../phonenumber";
-import { BsEye, BsEyeSlash } from "react-icons/bs"; // Import icons
-
 
 // For validating phone numbers without country codes
 const PHONE_NUMBER_REGEX = /^[0-9()\-\s]*$/;
@@ -55,7 +53,6 @@ interface IState {
     fieldValid: Partial<Record<LoginField, boolean>>;
     loginType: LoginField.Email | LoginField.MatrixId | LoginField.Phone;
     password: string;
-    showPassword: boolean; // Add state for password visibility
 }
 
 const enum LoginField {
@@ -91,15 +88,8 @@ export default class PasswordLogin extends React.PureComponent<IProps, IState> {
             fieldValid: {},
             loginType: LoginField.MatrixId,
             password: "",
-            showPassword: false, // Initialize password visibility state
         };
     }
-
-    private togglePasswordVisibility = (): void => {
-        this.setState((prevState) => ({
-            showPassword: !prevState.showPassword,
-        }));
-    };
 
     private onForgotPasswordClick = (ev: ButtonEvent): void => {
         ev.preventDefault();
@@ -380,8 +370,6 @@ export default class PasswordLogin extends React.PureComponent<IProps, IState> {
 
     public render(): React.ReactNode {
         let forgotPasswordJsx: JSX.Element | undefined;
-        const { showPassword } = this.state;
-
 
         if (this.props.onForgotPasswordClick) {
             forgotPasswordJsx = (
@@ -436,28 +424,20 @@ export default class PasswordLogin extends React.PureComponent<IProps, IState> {
                 <form onSubmit={this.onSubmitForm}>
                     {loginType}
                     {loginField}
-                    <div className="mx_PasswordField_container">
-                        <Field
-                            id="mx_LoginForm_password"
-                            className={pwFieldClass}
-                            autoComplete="current-password"
-                            type={showPassword ? "text" : "password"} // Toggle between "text" and "password"
-                            name="password"
-                            label={_t("common|password")}
-                            value={this.state.password}
-                            onChange={this.onPasswordChanged}
-                            disabled={this.props.busy}
-                            autoFocus={autoFocusPassword}
-                            onValidate={this.onPasswordValidate}
-                            ref={(field) => (this[LoginField.Password] = field)}
-                        />
-                        <span
-                            className="mx_PasswordField_toggle"
-                            onClick={this.togglePasswordVisibility}                   
-                        >
-                            {showPassword ? <BsEyeSlash /> : <BsEye />}
-                        </span>
-                    </div>
+                    <Field
+                        id="mx_LoginForm_password"
+                        className={pwFieldClass}
+                        autoComplete="current-password"
+                        type="password"
+                        name="password"
+                        label={_t("common|password")}
+                        value={this.state.password}
+                        onChange={this.onPasswordChanged}
+                        disabled={this.props.busy}
+                        autoFocus={autoFocusPassword}
+                        onValidate={this.onPasswordValidate}
+                        ref={(field) => (this[LoginField.Password] = field)}
+                    />
                     {forgotPasswordJsx}
                     {!this.props.busy && (
                         <input
